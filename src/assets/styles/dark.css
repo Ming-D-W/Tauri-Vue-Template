@@ -1,0 +1,242 @@
+/**
+ * 暗色主题样式
+ * 通过 [data-theme='dark'] 选择器应用
+ */
+
+[data-theme='dark'] {
+  /* ==================== 主色调 ==================== */
+  --primary-color: #5eddd4;
+  --primary-hover: #7dd3c0;
+  --primary-light: #2a4a47;
+  --primary-dark: #3ba99f;
+  --primary-gradient: linear-gradient(135deg, #5eddd4 0%, #3ba99f 100%);
+
+  /* ==================== 背景色 ==================== */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2a2a2a;
+  --bg-tertiary: #333333;
+  --bg-accent: #2a4a47;
+  --bg-dark: #0a0a0a;
+  --bg-hover: #3a3a3a;
+  --bg-active: #404040;
+  --bg-disabled: #2a2a2a;
+
+  /* ==================== 文字颜色 ==================== */
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --text-tertiary: #808080;
+  --text-muted: #606060;
+  --text-light: #ffffff;
+  --text-dark: #1a1a1a;
+  --text-disabled: #505050;
+  --text-link: #5eddd4;
+  --text-link-hover: #7dd3c0;
+
+  /* ==================== 边框颜色 ==================== */
+  --border-color: #404040;
+  --border-light: #333333;
+  --border-dark: #505050;
+  --border-focus: #5eddd4;
+  --border-error: #ff6b6b;
+  --border-success: #51cf66;
+  --border-warning: #ffd43b;
+
+  /* ==================== 状态颜色 ==================== */
+  --success-color: #51cf66;
+  --success-bg: #2b4a2f;
+  --success-border: #3d6b42;
+
+  --error-color: #ff6b6b;
+  --error-bg: #4a2b2b;
+  --error-border: #6b3d3d;
+
+  --warning-color: #ffd43b;
+  --warning-bg: #4a4a2b;
+  --warning-border: #6b6b3d;
+
+  --info-color: #4dabf7;
+  --info-bg: #2b3a4a;
+  --info-border: #3d5266;
+
+  /* ==================== 阴影 ==================== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.8);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.9);
+
+  /* ==================== 输入框 ==================== */
+  --input-bg: #2a2a2a;
+  --input-border: #404040;
+  --input-focus-border: #5eddd4;
+  --input-placeholder: #606060;
+
+  /* ==================== 按钮 ==================== */
+  --button-primary-bg: #5eddd4;
+  --button-primary-hover: #7dd3c0;
+  --button-primary-active: #3ba99f;
+  --button-primary-text: #1a1a1a;
+
+  --button-secondary-bg: #2a2a2a;
+  --button-secondary-hover: #3a3a3a;
+  --button-secondary-active: #404040;
+  --button-secondary-text: #e0e0e0;
+
+  --button-danger-bg: #ff6b6b;
+  --button-danger-hover: #ff8787;
+  --button-danger-active: #ff5252;
+  --button-danger-text: #ffffff;
+
+  /* ==================== 卡片 ==================== */
+  --card-bg: #2a2a2a;
+  --card-border: #404040;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+
+  /* ==================== 代码块 ==================== */
+  --code-bg: #1a1a1a;
+  --code-border: #404040;
+  --code-text: #e0e0e0;
+
+  /* ==================== 滚动条 ==================== */
+  --scrollbar-track: #2a2a2a;
+  --scrollbar-thumb: #505050;
+  --scrollbar-thumb-hover: #606060;
+
+  /* ==================== Toast 通知 ==================== */
+  --toast-bg: #2a2a2a;
+  --toast-border: #404040;
+  --toast-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+
+  /* ==================== Modal 弹窗 ==================== */
+  --modal-bg: #2a2a2a;
+  --modal-overlay: rgba(0, 0, 0, 0.8);
+  --modal-border: #404040;
+  --modal-shadow: 0 8px 24px rgba(0, 0, 0, 0.9);
+
+  /* ==================== 表格 ==================== */
+  --table-header-bg: #333333;
+  --table-row-hover: #3a3a3a;
+  --table-border: #404040;
+
+  /* ==================== 标签页 ==================== */
+  --tab-bg: #2a2a2a;
+  --tab-active-bg: #1a1a1a;
+  --tab-hover-bg: #333333;
+  --tab-border: #404040;
+
+  /* ==================== 进度条 ==================== */
+  --progress-bg: #2a2a2a;
+  --progress-fill: #5eddd4;
+
+  /* ==================== 分割线 ==================== */
+  --divider-color: #404040;
+
+  /* ==================== 选择器 ==================== */
+  --select-bg: #2a2a2a;
+  --select-border: #404040;
+  --select-option-hover: #3a3a3a;
+
+  /* ==================== 复选框/单选框 ==================== */
+  --checkbox-bg: #2a2a2a;
+  --checkbox-border: #404040;
+  --checkbox-checked-bg: #5eddd4;
+  --checkbox-checked-border: #5eddd4;
+
+  /* ==================== 开关 ==================== */
+  --switch-bg: #404040;
+  --switch-checked-bg: #5eddd4;
+  --switch-thumb: #ffffff;
+
+  /* ==================== 工具提示 ==================== */
+  --tooltip-bg: #1a1a1a;
+  --tooltip-text: #e0e0e0;
+  --tooltip-border: #404040;
+  --tooltip-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+/* ==================== 暗色主题特定样式 ==================== */
+
+[data-theme='dark'] body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme='dark'] ::selection {
+  background-color: var(--primary-color);
+  color: var(--text-dark);
+}
+
+[data-theme='dark'] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--radius-sm);
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* ==================== 暗色主题下的输入框 ==================== */
+
+[data-theme='dark'] input,
+[data-theme='dark'] textarea,
+[data-theme='dark'] select {
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--text-primary);
+}
+
+[data-theme='dark'] input::placeholder,
+[data-theme='dark'] textarea::placeholder {
+  color: var(--input-placeholder);
+}
+
+[data-theme='dark'] input:focus,
+[data-theme='dark'] textarea:focus,
+[data-theme='dark'] select:focus {
+  border-color: var(--input-focus-border);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(94, 221, 212, 0.2);
+}
+
+/* ==================== 暗色主题下的代码块 ==================== */
+
+[data-theme='dark'] code,
+[data-theme='dark'] pre {
+  background-color: var(--code-bg);
+  border-color: var(--code-border);
+  color: var(--code-text);
+}
+
+/* ==================== 暗色主题下的链接 ==================== */
+
+[data-theme='dark'] a {
+  color: var(--text-link);
+}
+
+[data-theme='dark'] a:hover {
+  color: var(--text-link-hover);
+}
+
+/* ==================== 暗色主题下的禁用状态 ==================== */
+
+[data-theme='dark'] :disabled,
+[data-theme='dark'] .disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==================== 暗色主题下的焦点可见性 ==================== */
+
+[data-theme='dark'] :focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}

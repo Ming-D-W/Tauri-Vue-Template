@@ -1,0 +1,72 @@
+{
+  "id": "5007816",
+  "name": "aug",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "6003694",
+      "name": "有效token",
+      "font_class": "validToken",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "3181791",
+      "name": "添加token",
+      "font_class": "addToken",
+      "unicode": "e65f",
+      "unicode_decimal": 58975
+    },
+    {
+      "icon_id": "31621298",
+      "name": "令牌失效",
+      "font_class": "invalidToken",
+      "unicode": "e8d9",
+      "unicode_decimal": 59609
+    },
+    {
+      "icon_id": "43454641",
+      "name": "Token1",
+      "font_class": "tokenLibrary",
+      "unicode": "e750",
+      "unicode_decimal": 59216
+    },
+    {
+      "icon_id": "4867111",
+      "name": "邮箱",
+      "font_class": "youxiang",
+      "unicode": "e65e",
+      "unicode_decimal": 58974
+    },
+    {
+      "icon_id": "4942659",
+      "name": "设置",
+      "font_class": "shezhi",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "12331679",
+      "name": "日志",
+      "font_class": "rizhi",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    },
+    {
+      "icon_id": "31494750",
+      "name": "开始流程",
+      "font_class": "kaishiliucheng",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "42708964",
+      "name": "访问令牌",
+      "font_class": "fangwenlingpai",
+      "unicode": "ea16",
+      "unicode_decimal": 59926
+    }
+  ]
+}

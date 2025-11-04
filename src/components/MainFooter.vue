@@ -1,0 +1,100 @@
+<template>
+  <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-left">
+        <span class="app-name">Tauri Vue Template</span>
+        <span class="version">v1.0.0</span>
+      </div>
+      <div class="footer-center">
+        <div class="status-indicator">
+          <span class="status-dot offline"></span>
+          <span class="status-text">离线模式</span>
+        </div>
+      </div>
+      <div class="footer-right">
+        <span class="framework-info">Vue 3</span>
+      </div>
+    </div>
+  </footer>
+</template>
+
+<script setup>
+// 空的脚本 - 无任何业务逻辑
+console.log('🦶 MainFooter 组件已加载（空实现）')
+</script>
+
+<style scoped>
+.main-footer {
+  background: var(--bg-secondary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.app-name {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.version {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--radius);
+  font-size: var(--font-size-xs);
+}
+
+.footer-center {
+  display: flex;
+  align-items: center;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gray-400);
+}
+
+.status-dot.online {
+  background: var(--success-color);
+}
+
+.status-dot.offline {
+  background: var(--gray-400);
+}
+
+.status-text {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+}
+
+.framework-info {
+  color: var(--text-muted);
+  font-style: italic;
+}
+</style>
