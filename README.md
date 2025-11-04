@@ -1,271 +1,273 @@
+[English](./README.en.md) | 简体中文
+
 # Warp Pilot
 
-A modern, production-ready desktop application built with **Tauri 2.0**, **Vue 3**, **Pinia**, and **Rust**. This project provides a solid foundation for building cross-platform desktop applications with native performance and modern web technologies.
+一个现代化、生产就绪的桌面应用程序，基于 **Tauri 2.0**、**Vue 3**、**Pinia** 和 **Rust** 构建。本项目为构建具有原生性能和现代 Web 技术的跨平台桌面应用程序提供了坚实的基础。
 
-## ✨ Features
+## ✨ 特性
 
-- 🚀 **Tauri 2.0** - Build smaller, faster, and more secure desktop applications
-- ⚡ **Vue 3** - Progressive JavaScript framework with Composition API
-- 📦 **Pinia** - Intuitive state management for Vue
-- 🦀 **Rust Backend** - High-performance, memory-safe backend
-- 📁 **File System Access** - Secure file operations through Tauri
-- 🎨 **Modern UI** - Clean, responsive interface with CSS Variables and theme system
-- 🔄 **Auto Import** - Automatic imports for Vue APIs and components
-- 🛠️ **Vue DevTools** - Integrated debugging tools
-- 🤖 **CI/CD** - Automated multi-platform builds and releases
-- 🔧 **Developer Friendly** - Hot reload, ESLint, Prettier, and more
+- 🚀 **Tauri 2.0** - 构建更小、更快、更安全的桌面应用程序
+- ⚡ **Vue 3** - 渐进式 JavaScript 框架，支持组合式 API
+- 📦 **Pinia** - 直观的 Vue 状态管理
+- 🦀 **Rust 后端** - 高性能、内存安全的后端
+- 📁 **文件系统访问** - 通过 Tauri 进行安全的文件操作
+- 🎨 **现代化 UI** - 简洁、响应式的界面，支持 CSS 变量和主题系统
+- 🔄 **自动导入** - 自动导入 Vue API 和组件
+- 🛠️ **Vue DevTools** - 集成调试工具
+- 🤖 **CI/CD** - 自动化多平台构建和发布
+- 🔧 **开发者友好** - 热重载、ESLint、Prettier 等
 
-## 🚀 Quick Start
+## 🚀 快速开始
 
-### Prerequisites
+### 前置要求
 
 - **Node.js** >= 16.0.0
-- **Rust** >= 1.70.0 ([Install Rust](https://www.rust-lang.org/tools/install))
-- **System Requirements**:
+- **Rust** >= 1.70.0 ([安装 Rust](https://www.rust-lang.org/tools/install))
+- **系统要求**:
   - macOS: 10.13+
   - Windows: 7+
-  - Linux: Various distributions supported
+  - Linux: 支持多种发行版
 
-### Installation
+### 安装
 
 ```bash
-# Clone the repository
+# 克隆仓库
 git clone https://github.com/yourusername/tauri-vue-desktop-template.git
 cd tauri-vue-desktop-template
 
-# Install dependencies
+# 安装依赖
 npm install
 ```
 
-### Development
+### 开发
 
 ```bash
-# Start development server with hot reload and Vue DevTools
-npm run dev          # Start Vite dev server (port 5173) + Vue DevTools
+# 启动开发服务器，支持热重载和 Vue DevTools
+npm run dev          # 启动 Vite 开发服务器（端口 5173）+ Vue DevTools
 
-# Or start Tauri development mode
-npm run tauri:dev    # Start Tauri application with hot reload
+# 或启动 Tauri 开发模式
+npm run tauri:dev    # 启动 Tauri 应用程序，支持热重载
 ```
 
-### Build
+### 构建
 
 ```bash
-# Build frontend
+# 构建前端
 npm run build
 
-# Build desktop application
+# 构建桌面应用程序
 npm run tauri:build
 ```
 
-The built application will be in `src-tauri/target/release/bundle/`.
+构建的应用程序将位于 `src-tauri/target/release/bundle/`。
 
-## 📦 Tech Stack
+## 📦 技术栈
 
-### Frontend
-- **Vue 3** - Progressive JavaScript framework
-- **Pinia** - State management
-- **Vite 7** - Next generation frontend tooling
-- **unplugin-auto-import** - Automatic API imports
-- **unplugin-vue-components** - Automatic component imports
-- **Vue DevTools** - Integrated debugging
-- **CSS Variables** - Modern styling approach
+### 前端
+- **Vue 3** - 渐进式 JavaScript 框架
+- **Pinia** - 状态管理
+- **Vite 7** - 下一代前端构建工具
+- **unplugin-auto-import** - 自动导入 API
+- **unplugin-vue-components** - 自动导入组件
+- **Vue DevTools** - 集成调试工具
+- **CSS Variables** - 现代化样式方案
 
-### Backend
-- **Rust** - Systems programming language
-- **Tauri 2.0** - Desktop application framework
-- **tauri-plugin-fs** - File system operations
-- **tauri-plugin-dialog** - Native dialogs
-- **serde** - Serialization framework
+### 后端
+- **Rust** - 系统编程语言
+- **Tauri 2.0** - 桌面应用程序框架
+- **tauri-plugin-fs** - 文件系统操作
+- **tauri-plugin-dialog** - 原生对话框
+- **serde** - 序列化框架
 
-### Development Tools
-- **ESLint** - Code linting
-- **Prettier** - Code formatting
-- **GitHub Actions** - CI/CD automation
+### 开发工具
+- **ESLint** - 代码检查
+- **Prettier** - 代码格式化
+- **GitHub Actions** - CI/CD 自动化
 
-## 🏗️ Project Structure
+## 🏗️ 项目结构
 
 ```
 warp-pilot/
 ├── .github/
 │   └── workflows/               # GitHub Actions CI/CD
-│       ├── release.yml          # Multi-platform release
-│       ├── test-build.yml       # Build testing
-│       └── lint.yml             # Code quality checks
-├── .vscode/                     # VS Code configuration
-│   ├── extensions.json          # Recommended extensions
-│   └── settings.json            # Editor settings
-├── src-tauri/                   # Rust backend
+│       ├── release.yml          # 多平台发布
+│       ├── test-build.yml       # 构建测试
+│       └── lint.yml             # 代码质量检查
+├── .vscode/                     # VS Code 配置
+│   ├── extensions.json          # 推荐扩展
+│   └── settings.json            # 编辑器设置
+├── src-tauri/                   # Rust 后端
 │   ├── src/
-│   │   └── main.rs              # Application entry point
-│   ├── Cargo.toml               # Rust dependencies
-│   └── tauri.conf.json          # Tauri configuration
-├── src/                         # Vue frontend
-│   ├── main.js                  # Vue entry point
-│   ├── App.vue                  # Root component
-│   ├── components/              # Vue components
-│   │   ├── common/              # Reusable components
+│   │   └── main.rs              # 应用程序入口
+│   ├── Cargo.toml               # Rust 依赖
+│   └── tauri.conf.json          # Tauri 配置
+├── src/                         # Vue 前端
+│   ├── main.js                  # Vue 入口
+│   ├── App.vue                  # 根组件
+│   ├── components/              # Vue 组件
+│   │   ├── common/              # 可复用组件
 │   │   ├── PopupTab.vue
 │   │   ├── ExamplesTab.vue
 │   │   ├── ToolsTab.vue
 │   │   └── ConfigTab.vue
-│   ├── stores/                  # Pinia stores
-│   │   ├── app.js               # App state
-│   │   └── settings.js          # Settings state
-│   ├── composables/             # Vue composables
-│   ├── api/                     # API layer
-│   ├── utils/                   # Utility functions
-│   ├── config/                  # Configuration
-│   └── assets/                  # Static assets
-├── auto-imports.d.js            # Auto-generated imports (git ignored)
-├── components.d.js              # Auto-generated components (git ignored)
-├── package.json                 # Node dependencies
-├── vite.config.js               # Vite configuration
-├── eslint.config.cjs            # ESLint configuration
-├── .prettierrc.json             # Prettier configuration
-├── .editorconfig                # Editor configuration
-├── CHANGES.md                   # Changelog
-├── CODE_SIGNING.md              # Code signing guide
-└── README.md                    # This file
+│   ├── stores/                  # Pinia 状态管理
+│   │   ├── app.js               # 应用状态
+│   │   └── settings.js          # 设置状态
+│   ├── composables/             # Vue 组合式函数
+│   ├── api/                     # API 层
+│   ├── utils/                   # 工具函数
+│   ├── config/                  # 配置
+│   └── assets/                  # 静态资源
+├── auto-imports.d.js            # 自动生成的导入（git 忽略）
+├── components.d.js              # 自动生成的组件（git 忽略）
+├── package.json                 # Node 依赖
+├── vite.config.js               # Vite 配置
+├── eslint.config.cjs            # ESLint 配置
+├── .prettierrc.json             # Prettier 配置
+├── .editorconfig                # 编辑器配置
+├── CHANGES.md                   # 更新日志
+├── CODE_SIGNING.md              # 代码签名指南
+└── README.md                    # 本文件
 ```
 
-## 🔧 Configuration
+## 🔧 配置
 
-### Auto Import
+### 自动导入
 
-The project uses `unplugin-auto-import` to automatically import Vue and Pinia APIs. You don't need to manually import:
+本项目使用 `unplugin-auto-import` 自动导入 Vue 和 Pinia API。你无需手动导入：
 
 ```javascript
-// ❌ No need to import these anymore
+// ❌ 不再需要手动导入这些
 // import { ref, computed, watch } from 'vue'
 // import { defineStore } from 'pinia'
 
-// ✅ Just use them directly
+// ✅ 直接使用即可
 const count = ref(0)
 const doubled = computed(() => count.value * 2)
 ```
 
-Configured imports include:
-- Vue APIs (ref, computed, watch, onMounted, etc.)
-- Pinia APIs (defineStore, storeToRefs, etc.)
-- Custom stores (useAppStore, useSettingsStore)
+已配置的导入包括：
+- Vue API（ref、computed、watch、onMounted 等）
+- Pinia API（defineStore、storeToRefs 等）
+- 自定义 store（useAppStore、useSettingsStore）
 
-### Tauri Configuration
+### Tauri 配置
 
-Edit `src-tauri/tauri.conf.json` to customize:
-- Application name and identifier
-- Window size and behavior
-- Build targets (DMG, MSI, AppImage, etc.)
-- Permissions and capabilities
+编辑 `src-tauri/tauri.conf.json` 以自定义：
+- 应用程序名称和标识符
+- 窗口大小和行为
+- 构建目标（DMG、MSI、AppImage 等）
+- 权限和功能
 
-### Code Signing
+### 代码签名
 
-For production releases with code signing, see [CODE_SIGNING.md](CODE_SIGNING.md) for detailed instructions on:
-- macOS code signing and notarization
-- Windows code signing
-- Configuring GitHub Secrets
+有关生产环境代码签名的详细说明，请参阅 [CODE_SIGNING.md](CODE_SIGNING.md)，包括：
+- macOS 代码签名和公证
+- Windows 代码签名
+- 配置 GitHub Secrets
 
-## 📚 API Documentation
+## 📚 API 文档
 
-### Tauri Commands
+### Tauri 命令
 
-The application includes pre-built Tauri commands:
+应用程序包含预构建的 Tauri 命令：
 
-#### File Operations
+#### 文件操作
 ```javascript
 import { api } from '@api'
 
-// Show save dialog
+// 显示保存对话框
 const result = await api.file.showSaveDialog({ defaultPath: 'data.json' })
 
-// Show open dialog
+// 显示打开对话框
 const files = await api.file.showOpenDialog({ multiple: true })
 
-// Write file
+// 写入文件
 await api.file.writeFile(filePath, content)
 
-// Read file
+// 读取文件
 const content = await api.file.readFile(filePath)
 ```
 
-#### System Operations
+#### 系统操作
 ```javascript
-// Get application version
+// 获取应用程序版本
 const version = await api.system.getVersion()
 
-// Get data directory
+// 获取数据目录
 const dataDir = await api.system.getDataDir()
 
-// Get home directory
+// 获取主目录
 const homeDir = await api.system.getHomeDir()
 ```
 
-### State Management
+### 状态管理
 
-The application uses Pinia for state management with two main stores:
+应用程序使用 Pinia 进行状态管理，包含两个主要 store：
 
 #### App Store
 ```javascript
-// Auto-imported, no need to import manually
+// 自动导入，无需手动导入
 const appStore = useAppStore()
 
-// Access state
+// 访问状态
 console.log(appStore.version)
 console.log(appStore.dataDir)
 
-// Call actions
+// 调用 actions
 await appStore.initialize()
 ```
 
 #### Settings Store
 ```javascript
-// Auto-imported, no need to import manually
+// 自动导入，无需手动导入
 const settingsStore = useSettingsStore()
 
-// Access state
+// 访问状态
 console.log(settingsStore.theme)
 console.log(settingsStore.language)
 
-// Call actions
+// 调用 actions
 settingsStore.setTheme('dark')
 settingsStore.saveSettings()
 ```
 
-## 🛠️ Development Guide
+## 🛠️ 开发指南
 
-### Adding New Tauri Commands
+### 添加新的 Tauri 命令
 
-1. Create command in `src-tauri/src/main.rs`:
+1. 在 `src-tauri/src/main.rs` 中创建命令：
 ```rust
 #[tauri::command]
 fn your_command(param: String) -> Result<String, String> {
-    // Your logic here
+    // 你的逻辑
     Ok("Success".to_string())
 }
 ```
 
-2. Register in the invoke handler:
+2. 在 invoke handler 中注册：
 ```rust
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             your_command,
-            // ... other commands
+            // ... 其他命令
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 ```
 
-3. Call from frontend:
+3. 从前端调用：
 ```javascript
 import { invoke } from '@tauri-apps/api/core'
 
 const result = await invoke('your_command', { param: 'value' })
 ```
 
-### Creating New Components
+### 创建新组件
 
-Components are automatically imported, no need to register them:
+组件会自动导入，无需注册：
 
 ```vue
 <!-- src/components/MyComponent.vue -->
@@ -274,66 +276,66 @@ Components are automatically imported, no need to register them:
 </template>
 
 <script setup>
-// ref is auto-imported
+// ref 会自动导入
 const message = ref('Hello World')
 </script>
 ```
 
-Use it directly in other components:
+在其他组件中直接使用：
 ```vue
 <template>
-  <MyComponent />  <!-- No import needed! -->
+  <MyComponent />  <!-- 无需导入！ -->
 </template>
 ```
 
-### Customizing Styles
+### 自定义样式
 
-- Global styles: `src/assets/styles/global.css`
-- Dark theme: `src/assets/styles/dark.css`
-- CSS variables are defined in both files for theming
+- 全局样式：`src/assets/styles/global.css`
+- 深色主题：`src/assets/styles/dark.css`
+- CSS 变量在两个文件中定义，用于主题切换
 
-### CI/CD Workflows
+### CI/CD 工作流
 
-The project includes three GitHub Actions workflows:
+项目包含三个 GitHub Actions 工作流：
 
-1. **release.yml** - Triggered on version tags (v*.*.*), builds and publishes releases for all platforms
-2. **test-build.yml** - Runs on push to main, tests the build process
-3. **lint.yml** - Runs ESLint and Prettier checks on code changes
+1. **release.yml** - 在版本标签（v*.*.*）上触发，为所有平台构建并发布版本
+2. **test-build.yml** - 在推送到 main 分支时运行，测试构建过程
+3. **lint.yml** - 在代码更改时运行 ESLint 和 Prettier 检查
 
-To create a release:
+创建发布版本：
 ```bash
-npm run bump  # Update version
+npm run bump  # 更新版本
 git push && git push --tags
 ```
 
-## 🤝 Contributing
+## 🤝 贡献
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+欢迎贡献！请随时提交 Pull Request。
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Fork 本仓库
+2. 创建你的特性分支（`git checkout -b feature/AmazingFeature`）
+3. 提交你的更改（`git commit -m 'Add some AmazingFeature'`）
+4. 推送到分支（`git push origin feature/AmazingFeature`）
+5. 打开一个 Pull Request
 
-## 📄 License
+## 📄 许可证
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件。
 
-## 🙏 Acknowledgments
+## 🙏 致谢
 
-- [Tauri](https://tauri.app/) - For the amazing desktop framework
-- [Vue.js](https://vuejs.org/) - For the progressive framework
-- [Rust](https://www.rust-lang.org/) - For the powerful systems language
-- [tauri-vue-template](https://github.com/Uninen/tauri-vue-template) - For inspiration and best practices
+- [Tauri](https://tauri.app/) - 出色的桌面应用框架
+- [Vue.js](https://vuejs.org/) - 渐进式框架
+- [Rust](https://www.rust-lang.org/) - 强大的系统编程语言
+- [tauri-vue-template](https://github.com/Uninen/tauri-vue-template) - 灵感和最佳实践
 
-## 📞 Support
+## 📞 支持
 
-- 📖 [Changelog](CHANGES.md)
-- 🔐 [Code Signing Guide](CODE_SIGNING.md)
-- 🐛 [Issue Tracker](https://github.com/yourusername/warp-pilot/issues)
+- 📖 [更新日志](CHANGES.md)
+- 🔐 [代码签名指南](CODE_SIGNING.md)
+- 🐛 [问题追踪](https://github.com/yourusername/warp-pilot/issues)
 
 ---
 
-**Happy Coding! 🚀**
+**祝编码愉快！🚀**
 
