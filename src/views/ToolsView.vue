@@ -173,14 +173,16 @@
       </section>
     </div>
 
-    <!-- Toast 组件 -->
-    <Toast v-if="toast.show" :type="toast.type" :message="toast.message" @close="toast.show = false" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { api } from '@api'
+import { useToast } from '@composables/useToast'
+
+// 使用全局 Toast
+const toast = useToast()
 
 // 文件工具状态
 const selectedFiles = ref([])
@@ -206,32 +208,16 @@ const base64Result = ref('')
 const jsonInput = ref('')
 const jsonResult = ref('')
 
-// Toast 状态
-const toast = ref({
-  show: false,
-  type: 'info',
-  message: '',
-})
-
-// Toast 方法
-const showToast = (type, message) => {
-  toast.value = {
-    show: true,
-    type,
-    message,
-  }
-}
-
 // 文件工具方法
 const selectFile = async () => {
   try {
     const path = await api.file.selectFile()
     if (path) {
       selectedFiles.value = [path]
-      showToast('success', '文件已选择')
+      toast.success('文件已选择')
     }
   } catch (error) {
-    showToast('error', `选择文件失败: ${error.message}`)
+    toast.error(`选择文件失败: ${error.message}`)
   }
 }
 
@@ -240,10 +226,10 @@ const selectMultipleFiles = async () => {
     const paths = await api.file.selectMultipleFiles()
     if (paths && paths.length > 0) {
       selectedFiles.value = paths
-      showToast('success', `已选择 ${paths.length} 个文件`)
+      toast.success(`已选择 ${paths.length} 个文件`)
     }
   } catch (error) {
-    showToast('error', `选择文件失败: ${error.message}`)
+    toast.error(`选择文件失败: ${error.message}`)
   }
 }
 
@@ -252,74 +238,74 @@ const selectDirectory = async () => {
     const path = await api.file.selectDirectory()
     if (path) {
       selectedFiles.value = [path]
-      showToast('success', '目录已选择')
+      toast.success('目录已选择')
     }
   } catch (error) {
-    showToast('error', `选择目录失败: ${error.message}`)
+    toast.error(`选择目录失败: ${error.message}`)
   }
 }
 
 const readFileContent = async () => {
   try {
     if (!filePath.value) {
-      showToast('warning', '请输入文件路径')
+      toast.warning('请输入文件路径')
       return
     }
     const content = await api.system.readFile(filePath.value)
     fileContentText.value = content
-    showToast('success', '文件已读取')
+    toast.success('文件已读取')
   } catch (error) {
-    showToast('error', `读取文件失败: ${error.message}`)
+    toast.error(`读取文件失败: ${error.message}`)
   }
 }
 
 const writeFileContent = async () => {
   try {
     if (!filePath.value || !fileContentText.value) {
-      showToast('warning', '请输入文件路径和内容')
+      toast.warning('请输入文件路径和内容')
       return
     }
     await api.system.writeFile(filePath.value, fileContentText.value)
-    showToast('success', '文件已写入')
+    toast.success('文件已写入')
   } catch (error) {
-    showToast('error', `写入文件失败: ${error.message}`)
+    toast.error(`写入文件失败: ${error.message}`)
   }
 }
 
 const checkFileExists = async () => {
   try {
     if (!filePath.value) {
-      showToast('warning', '请输入文件路径')
+      toast.warning('请输入文件路径')
       return
     }
     const exists = await api.system.fileExists(filePath.value)
     fileExistsResult.value = exists
-    showToast('info', exists ? '文件存在' : '文件不存在')
+    toast.info(exists ? '文件存在' : '文件不存在')
   } catch (error) {
-    showToast('error', `检查文件失败: ${error.message}`)
+    toast.error(`检查文件失败: ${error.message}`)
   }
 }
 
 const showSaveDialog = async () => {
   try {
     if (!saveContent.value) {
-      showToast('warning', '请输入要保存的内容')
+      toast.warning('请输入要保存的内容')
       return
     }
     const path = await api.file.saveTextFile(saveContent.value)
     if (path) {
       savedFilePath.value = path
-      showToast('success', '文件已保存')
+      toast.success('文件已保存')
     }
   } catch (error) {
-    showToast('error', `保存文件失败: ${error.message}`)
+    toast.error(`保存文件失败: ${error.message}`)
   }
 }
 
 // 系统工具方法
 const executeCommand = async () => {
   if (!command.value) {
-    showToast('warning', '请输入命令')
+    toast.warning('请输入命令')
     return
   }
 
@@ -333,10 +319,10 @@ const executeCommand = async () => {
     if (result.stderr) {
       commandError.value = result.stderr
     }
-    showToast('success', '命令执行完成')
+    toast.success('命令执行完成')
   } catch (error) {
     commandError.value = error.message
-    showToast('error', `命令执行失败: ${error.message}`)
+    toast.error(`命令执行失败: ${error.message}`)
   } finally {
     isExecuting.value = false
   }
@@ -345,18 +331,18 @@ const executeCommand = async () => {
 const loadSystemInfo = async () => {
   try {
     systemInfo.value = await api.system.getSystemInfo()
-    showToast('success', '系统信息已刷新')
+    toast.success('系统信息已刷新')
   } catch (error) {
-    showToast('error', `获取系统信息失败: ${error.message}`)
+    toast.error(`获取系统信息失败: ${error.message}`)
   }
 }
 
 const getHomeDir = async () => {
   try {
     homeDir.value = await api.system.getHomeDir()
-    showToast('success', '主目录已获取')
+    toast.success('主目录已获取')
   } catch (error) {
-    showToast('error', `获取主目录失败: ${error.message}`)
+    toast.error(`获取主目录失败: ${error.message}`)
   }
 }
 
@@ -380,18 +366,18 @@ const getTextLength = () => {
 const encodeBase64 = () => {
   try {
     base64Result.value = btoa(base64Input.value)
-    showToast('success', 'Base64 编码完成')
+    toast.success('Base64 编码完成')
   } catch (error) {
-    showToast('error', `编码失败: ${error.message}`)
+    toast.error(`编码失败: ${error.message}`)
   }
 }
 
 const decodeBase64 = () => {
   try {
     base64Result.value = atob(base64Input.value)
-    showToast('success', 'Base64 解码完成')
+    toast.success('Base64 解码完成')
   } catch (error) {
-    showToast('error', `解码失败: ${error.message}`)
+    toast.error(`解码失败: ${error.message}`)
   }
 }
 
@@ -399,9 +385,9 @@ const formatJSON = () => {
   try {
     const obj = JSON.parse(jsonInput.value)
     jsonResult.value = JSON.stringify(obj, null, 2)
-    showToast('success', 'JSON 格式化完成')
+    toast.success('JSON 格式化完成')
   } catch (error) {
-    showToast('error', `格式化失败: ${error.message}`)
+    toast.error(`格式化失败: ${error.message}`)
   }
 }
 
@@ -409,9 +395,9 @@ const minifyJSON = () => {
   try {
     const obj = JSON.parse(jsonInput.value)
     jsonResult.value = JSON.stringify(obj)
-    showToast('success', 'JSON 压缩完成')
+    toast.success('JSON 压缩完成')
   } catch (error) {
-    showToast('error', `压缩失败: ${error.message}`)
+    toast.error(`压缩失败: ${error.message}`)
   }
 }
 

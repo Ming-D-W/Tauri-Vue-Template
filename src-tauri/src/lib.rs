@@ -39,13 +39,7 @@ pub fn run() {
             commands::system_read_file,
             commands::system_write_file,
             commands::system_file_exists,
-            commands::system_backup_file,
-            commands::system_restore_file,
             commands::system_get_info,
-            commands::system_get_file_size,
-            // File commands
-            commands::file::show_save_dialog,
-            commands::file::write_text_file,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

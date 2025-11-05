@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Tauri Vue Template",
+        "title": "",
         "width": 800,
         "height": 600,
         "resizable": false,

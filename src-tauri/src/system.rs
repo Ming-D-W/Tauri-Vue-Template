@@ -62,25 +62,6 @@ impl SystemService {
     pub fn file_exists(&self, path: &str) -> bool {
         Path::new(path).exists()
     }
-    
-    pub fn backup_file(&self, path: &str) -> Result<String, String> {
-        if !self.file_exists(path) {
-            return Err("File does not exist".to_string());
-        }
-        
-        let backup_path = format!("{}.backup", path);
-        fs::copy(path, &backup_path)
-            .map_err(|e| format!("Failed to backup file: {}", e))?;
-        
-        Ok(backup_path)
-    }
-    
-    pub fn restore_file(&self, backup_path: &str, original_path: &str) -> Result<(), String> {
-        fs::copy(backup_path, original_path)
-            .map_err(|e| format!("Failed to restore file: {}", e))?;
-
-        Ok(())
-    }
 
     pub fn get_system_info(&self) -> SystemInfo {
         SystemInfo {
@@ -117,12 +98,6 @@ impl SystemService {
         }
 
         "Unknown".to_string()
-    }
-
-    pub fn get_file_size(&self, path: &str) -> Result<u64, String> {
-        let metadata = fs::metadata(path)
-            .map_err(|e| format!("Failed to get file metadata: {}", e))?;
-        Ok(metadata.len())
     }
 }
 

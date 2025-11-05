@@ -4,14 +4,13 @@ import { logger } from '@/utils/logger'
 
 /**
  * 设置 Store
- * 管理应用设置，如主题、语言、自动更新等
+ * 管理应用设置，如语言、自动更新等
  * 使用 pinia-plugin-persistedstate 自动持久化到 localStorage
  */
 export const useSettingsStore = defineStore(
   'settings',
   () => {
     // ==================== State ====================
-    const theme = ref('light')
     const language = ref('zh-CN')
     const autoUpdate = ref(true)
     const enableNotifications = ref(true)
@@ -19,52 +18,10 @@ export const useSettingsStore = defineStore(
     const fontSize = ref('medium') // small, medium, large
 
     // ==================== Constants ====================
-    const AVAILABLE_THEMES = ['light', 'dark', 'auto']
     const AVAILABLE_LANGUAGES = ['zh-CN', 'en-US']
     const AVAILABLE_FONT_SIZES = ['small', 'medium', 'large']
 
     // ==================== Actions ====================
-
-    /**
-     * 设置主题
-     * @param {string} newTheme - 主题名称 (light, dark, auto)
-     */
-    function setTheme(newTheme) {
-      if (!AVAILABLE_THEMES.includes(newTheme)) {
-        logger.warn(`Invalid theme: ${newTheme}`)
-        return
-      }
-
-      theme.value = newTheme
-      applyTheme(newTheme)
-      logger.info(`Theme changed to: ${newTheme}`)
-    }
-
-    /**
-     * 应用主题到 DOM
-     * @param {string} themeName - 主题名称
-     */
-    function applyTheme(themeName) {
-      let actualTheme = themeName
-
-      // 如果是 auto，根据系统偏好设置
-      if (themeName === 'auto') {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-        actualTheme = prefersDark ? 'dark' : 'light'
-      }
-
-      document.documentElement.setAttribute('data-theme', actualTheme)
-      logger.debug(`Applied theme: ${actualTheme}`)
-    }
-
-    /**
-     * 切换主题
-     */
-    function toggleTheme() {
-      const currentIndex = AVAILABLE_THEMES.indexOf(theme.value)
-      const nextIndex = (currentIndex + 1) % AVAILABLE_THEMES.length
-      setTheme(AVAILABLE_THEMES[nextIndex])
-    }
 
     /**
      * 设置语言
@@ -158,11 +115,10 @@ export const useSettingsStore = defineStore(
     }
 
     /**
-     * 初始化设置（应用主题和字体大小）
+     * 初始化设置（应用字体大小）
      * 由于使用了持久化插件，数据会自动加载，这里只需要应用到 DOM
      */
     function initializeSettings() {
-      applyTheme(theme.value)
       applyFontSize(fontSize.value)
       logger.info('Settings initialized and applied to DOM')
     }
@@ -171,14 +127,12 @@ export const useSettingsStore = defineStore(
      * 重置所有设置为默认值
      */
     function resetSettings() {
-      theme.value = 'light'
       language.value = 'zh-CN'
       autoUpdate.value = true
       enableNotifications.value = true
       enableSounds.value = true
       fontSize.value = 'medium'
 
-      applyTheme('light')
       applyFontSize('medium')
 
       logger.info('Settings reset to defaults')
@@ -190,7 +144,6 @@ export const useSettingsStore = defineStore(
      */
     function exportSettings() {
       return {
-        theme: theme.value,
         language: language.value,
         autoUpdate: autoUpdate.value,
         enableNotifications: enableNotifications.value,
@@ -204,9 +157,6 @@ export const useSettingsStore = defineStore(
      * @param {Object} settings - 设置对象
      */
     function importSettings(settings) {
-      if (settings.theme) {
-        setTheme(settings.theme)
-      }
       if (settings.language) {
         setLanguage(settings.language)
       }
@@ -226,23 +176,9 @@ export const useSettingsStore = defineStore(
       logger.info('Settings imported')
     }
 
-    // ==================== Watchers ====================
-
-    // 监听系统主题变化（仅当设置为 auto 时）
-    if (window.matchMedia) {
-      const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
-      darkModeQuery.addEventListener('change', e => {
-        if (theme.value === 'auto') {
-          applyTheme('auto')
-          logger.debug('System theme changed, reapplying auto theme')
-        }
-      })
-    }
-
     // ==================== Return ====================
     return {
       // State
-      theme,
       language,
       autoUpdate,
       enableNotifications,
@@ -250,13 +186,10 @@ export const useSettingsStore = defineStore(
       fontSize,
 
       // Constants
-      AVAILABLE_THEMES,
       AVAILABLE_LANGUAGES,
       AVAILABLE_FONT_SIZES,
 
       // Actions
-      setTheme,
-      toggleTheme,
       setLanguage,
       setAutoUpdate,
       toggleAutoUpdate,
@@ -276,7 +209,7 @@ export const useSettingsStore = defineStore(
     persist: {
       key: 'app-settings',
       storage: localStorage,
-      paths: ['theme', 'language', 'autoUpdate', 'enableNotifications', 'enableSounds', 'fontSize'],
+      paths: ['language', 'autoUpdate', 'enableNotifications', 'enableSounds', 'fontSize'],
     },
   }
 )

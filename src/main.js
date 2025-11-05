@@ -4,7 +4,6 @@ import App from './App.vue'
 import router from './router'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import './assets/styles/global.css'
-import './assets/styles/dark.css'
 import { logger } from './utils/logger'
 import { handleError } from './utils/errorHandler'
 // useAppStore, useSettingsStore 已通过 unplugin-auto-import 自动导入
@@ -68,6 +67,5 @@ if (import.meta.env.MODE === 'development') {
   logger.info('🛣️ Vue Router 路由系统已加载')
   logger.info('⚡ Tauri 2.0 + Rust 后端已就绪')
   logger.info('🛡️ 全局错误处理已启用')
-  logger.info('🎨 主题系统已加载')
   logger.info('💾 状态持久化已启用')
 }

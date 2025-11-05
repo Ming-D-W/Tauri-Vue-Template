@@ -13,7 +13,7 @@ A modern, production-ready desktop application template built with **Tauri 2.0**
 - 🛣️ **Vue Router 4** - Official router with Hash mode
 - 🦀 **Rust Backend** - High-performance, memory-safe backend
 - 📁 **File System Access** - Secure file operations through Tauri
-- 🎨 **Modern UI** - Clean, responsive interface with CSS Variables and theme system
+- 🎨 **Modern UI** - Clean, responsive interface with CSS Variables
 - 🔄 **Auto Import** - Automatic imports for Vue APIs, components, and router
 - 💾 **State Persistence** - Auto-persist with pinia-plugin-persistedstate
 - 🛠️ **Vue DevTools** - Development environment debugging tools
@@ -182,29 +182,44 @@ The application includes pre-built Tauri commands:
 ```javascript
 import { api } from '@api'
 
-// Show save dialog
-const result = await api.file.showSaveDialog({ defaultPath: 'data.json' })
+// Select single file
+const filePath = await api.file.selectFile()
 
-// Show open dialog
-const files = await api.file.showOpenDialog({ multiple: true })
+// Select multiple files
+const filePaths = await api.file.selectMultipleFiles()
 
-// Write file
-await api.file.writeFile(filePath, content)
+// Select directory
+const dirPath = await api.file.selectDirectory()
 
-// Read file
-const content = await api.file.readFile(filePath)
+// Save text file (with save dialog)
+const savedPath = await api.file.saveTextFile('File content', 'filename.txt')
 ```
 
 #### System Operations
 ```javascript
 // Get application version
-const version = await api.system.getVersion()
+const version = await api.app.getVersion()
 
 // Get data directory
-const dataDir = await api.system.getDataDir()
+const dataDir = await api.app.getDataDir()
 
 // Get home directory
 const homeDir = await api.system.getHomeDir()
+
+// Read file
+const content = await api.system.readFile(filePath)
+
+// Write file
+await api.system.writeFile(filePath, content)
+
+// Check if file exists
+const exists = await api.system.fileExists(filePath)
+
+// Get system information
+const sysInfo = await api.system.getSystemInfo()
+
+// Execute system command
+const result = await api.system.executeCommand('ls', ['-la'])
 ```
 
 ### State Management
@@ -230,11 +245,11 @@ await appStore.initialize()
 const settingsStore = useSettingsStore()
 
 // Access state
-console.log(settingsStore.theme)
 console.log(settingsStore.language)
+console.log(settingsStore.autoUpdate)
 
 // Call actions
-settingsStore.setTheme('dark')
+settingsStore.setLanguage('en-US')
 settingsStore.saveSettings()
 ```
 
@@ -297,8 +312,7 @@ Use it directly in other components:
 ### Customizing Styles
 
 - Global styles: `src/assets/styles/global.css`
-- Dark theme: `src/assets/styles/dark.css`
-- CSS variables are defined in both files for theming
+- CSS variables are defined in the file for customizing colors, spacing, fonts, etc.
 
 ### CI/CD Workflows
 
@@ -339,7 +353,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - 📖 [Changelog](CHANGES.md)
 - 🔐 [Code Signing Guide](CODE_SIGNING.md)
-- 🐛 [Issue Tracker](https://github.com/yourusername/warp-pilot/issues)
+- 🐛 [Issue Tracker](https://github.com/yourusername/tauri-vue-template/issues)
 
 ---
 

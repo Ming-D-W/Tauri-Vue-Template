@@ -4,4 +4,3 @@
 
 export { default as Toast } from './Toast.vue'
 export { default as Modal } from './Modal.vue'
-export { default as ThemeToggle } from './ThemeToggle.vue'

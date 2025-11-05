@@ -27,21 +27,6 @@ pub fn system_file_exists(path: String, system: State<SystemService>) -> bool {
 }
 
 #[tauri::command]
-pub fn system_backup_file(path: String, system: State<SystemService>) -> Result<String, String> {
-    system.backup_file(&path)
-}
-
-#[tauri::command]
-pub fn system_restore_file(backup_path: String, original_path: String, system: State<SystemService>) -> Result<(), String> {
-    system.restore_file(&backup_path, &original_path)
-}
-
-#[tauri::command]
 pub fn system_get_info(system: State<SystemService>) -> SystemInfo {
     system.get_system_info()
-}
-
-#[tauri::command]
-pub fn system_get_file_size(path: String, system: State<SystemService>) -> Result<u64, String> {
-    system.get_file_size(&path)
 }

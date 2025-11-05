@@ -7,26 +7,6 @@
 
     <!-- 配置分类 -->
     <div class="config-sections">
-      <!-- 外观设置 -->
-      <div class="config-section">
-        <h3><icon-mdi-palette /> 外观设置</h3>
-        <div class="config-items">
-          <div class="config-item">
-            <label class="config-label">主题模式:</label>
-            <div class="theme-selector">
-              <button
-                v-for="theme in themes"
-                :key="theme.value"
-                :class="['theme-btn', { active: currentTheme === theme.value }]"
-                @click="changeTheme(theme.value)"
-              >
-                {{ theme.icon }} {{ theme.label }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- 数据存储 -->
       <div class="config-section">
         <h3>💾 数据存储</h3>
@@ -102,21 +82,6 @@ const systemInfo = computed(
       os_version: '',
     }
 )
-const currentTheme = computed(() => settingsStore.theme)
-
-// 主题选项
-const themes = [
-  { value: 'light', label: '亮色', icon: '☀️' },
-  { value: 'dark', label: '暗色', icon: '🌙' },
-  { value: 'auto', label: '跟随系统', icon: '🔄' },
-]
-
-// 切换主题
-const changeTheme = theme => {
-  settingsStore.setTheme(theme)
-  toast.success(`主题已切换为: ${themes.find(t => t.value === theme)?.label}`)
-}
-
 // 清空 LocalStorage
 const clearLocalStorage = async () => {
   const confirmed = confirm('⚠️ 确定要清空 LocalStorage 吗？\n\n此操作不可撤销！')
@@ -219,36 +184,6 @@ onMounted(async () => {
   color: var(--text-secondary);
   font-family: monospace;
   word-break: break-all;
-}
-
-/* 主题选择器 */
-.theme-selector {
-  display: flex;
-  gap: var(--spacing-sm);
-  flex-wrap: wrap;
-}
-
-.theme-btn {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  border: 2px solid var(--border-light);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-}
-
-.theme-btn:hover {
-  border-color: var(--primary-color);
-  background: var(--primary-light);
-}
-
-.theme-btn.active {
-  border-color: var(--primary-color);
-  background: var(--primary-color);
-  color: white;
 }
 
 /* 数据库操作 */

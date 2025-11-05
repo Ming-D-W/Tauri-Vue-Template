@@ -12,7 +12,7 @@
 - 🛣️ **Vue Router 4** - 官方路由管理器，支持 Hash 模式
 - 🦀 **Rust 后端** - 高性能、内存安全的后端
 - 📁 **文件系统访问** - 通过 Tauri 进行安全的文件操作
-- 🎨 **现代化 UI** - 简洁、响应式的界面，支持 CSS 变量和主题系统
+- 🎨 **现代化 UI** - 简洁、响应式的界面，支持 CSS 变量
 - 🔄 **自动导入** - 自动导入 Vue API、组件和路由
 - 💾 **状态持久化** - 使用 pinia-plugin-persistedstate 自动持久化
 - 🛠️ **Vue DevTools** - 开发环境集成调试工具
@@ -115,8 +115,7 @@ tauri-vue-template/
 │   ├── components/              # 组件
 │   │   ├── common/              # 通用组件
 │   │   │   ├── Modal.vue
-│   │   │   ├── Toast.vue
-│   │   │   └── ThemeToggle.vue
+│   │   │   └── Toast.vue
 │   │   ├── layout/              # 布局组件
 │   │   │   ├── AppLayout.vue
 │   │   │   ├── Titlebar.vue
@@ -134,9 +133,7 @@ tauri-vue-template/
 │   ├── api/                     # API 层
 │   ├── utils/                   # 工具函数
 │   ├── constants/               # 常量定义
-│   │   ├── app.js               # 应用常量
-│   │   ├── routes.js            # 路由常量
-│   │   └── theme.js             # 主题常量
+│   │   └── routes.js            # 路由常量
 │   ├── config/                  # 配置管理
 │   ├── assets/                  # 静态资源
 │   ├── App.vue                  # 根组件
@@ -265,29 +262,44 @@ export const useMyStore = defineStore(
 ```javascript
 import { api } from '@api'
 
-// 显示保存对话框
-const result = await api.file.showSaveDialog({ defaultPath: 'data.json' })
+// 选择单个文件
+const filePath = await api.file.selectFile()
 
-// 显示打开对话框
-const files = await api.file.showOpenDialog({ multiple: true })
+// 选择多个文件
+const filePaths = await api.file.selectMultipleFiles()
 
-// 写入文件
-await api.file.writeFile(filePath, content)
+// 选择目录
+const dirPath = await api.file.selectDirectory()
 
-// 读取文件
-const content = await api.file.readFile(filePath)
+// 保存文本文件（显示保存对话框）
+const savedPath = await api.file.saveTextFile('文件内容', 'filename.txt')
 ```
 
 #### 系统操作
 ```javascript
 // 获取应用程序版本
-const version = await api.system.getVersion()
+const version = await api.app.getVersion()
 
 // 获取数据目录
-const dataDir = await api.system.getDataDir()
+const dataDir = await api.app.getDataDir()
 
 // 获取主目录
 const homeDir = await api.system.getHomeDir()
+
+// 读取文件
+const content = await api.system.readFile(filePath)
+
+// 写入文件
+await api.system.writeFile(filePath, content)
+
+// 检查文件是否存在
+const exists = await api.system.fileExists(filePath)
+
+// 获取系统信息
+const sysInfo = await api.system.getSystemInfo()
+
+// 执行系统命令
+const result = await api.system.executeCommand('ls', ['-la'])
 ```
 
 ### 状态管理
@@ -313,11 +325,11 @@ await appStore.initialize()
 const settingsStore = useSettingsStore()
 
 // 访问状态
-console.log(settingsStore.theme)
 console.log(settingsStore.language)
+console.log(settingsStore.autoUpdate)
 
 // 调用 actions
-settingsStore.setTheme('dark')
+settingsStore.setLanguage('en-US')
 settingsStore.saveSettings()
 ```
 
@@ -380,8 +392,7 @@ const message = ref('Hello World')
 ### 自定义样式
 
 - 全局样式：`src/assets/styles/global.css`
-- 深色主题：`src/assets/styles/dark.css`
-- CSS 变量在两个文件中定义，用于主题切换
+- CSS 变量在文件中定义，可自定义颜色、间距、字体等
 
 ### CI/CD 工作流
 
@@ -422,7 +433,7 @@ git push && git push --tags
 
 - 📖 [更新日志](CHANGES.md)
 - 🔐 [代码签名指南](CODE_SIGNING.md)
-- 🐛 [问题追踪](https://github.com/yourusername/warp-pilot/issues)
+- 🐛 [问题追踪](https://github.com/yourusername/tauri-vue-template/issues)
 
 ---
 

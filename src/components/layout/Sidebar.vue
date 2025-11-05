@@ -12,11 +12,6 @@
         <component :is="tab.icon" class="tab-icon" />
       </button>
     </div>
-
-    <!-- 主题切换按钮 -->
-    <div class="tab-navigation-footer">
-      <ThemeToggle />
-    </div>
   </nav>
 </template>
 
@@ -72,15 +67,6 @@ const navigateTo = path => {
   flex-direction: column;
   align-items: center;
   width: 100%;
-}
-
-.tab-navigation-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  padding: var(--spacing-sm) 0;
-  border-top: 1px solid var(--border-light);
 }
 
 .tab-btn {

@@ -169,13 +169,10 @@
 // Modal 组件已通过 unplugin-vue-components 自动导入
 import { api } from '@api'
 import { useToast } from '@composables/useToast'
-import { useModal } from '@composables/useModal'
 // useAppStore 已通过 unplugin-auto-import 自动导入
 
 // 使用 composables
 const toast = useToast()
-const modal = useModal()
-const appStore = useAppStore()
 
 // UI 组件状态
 const textInput = ref('')
