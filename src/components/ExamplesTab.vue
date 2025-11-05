@@ -160,12 +160,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+// ref 已通过 unplugin-auto-import 自动导入
+// Modal 组件已通过 unplugin-vue-components 自动导入
 import { api } from '@api'
-import Modal from './common/Modal.vue'
 import { useToast } from '@composables/useToast'
 import { useModal } from '@composables/useModal'
-import { useAppStore } from '@stores/app'
+// useAppStore 已通过 unplugin-auto-import 自动导入
 
 // 使用 composables
 const toast = useToast()

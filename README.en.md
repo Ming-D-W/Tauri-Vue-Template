@@ -1,20 +1,23 @@
 English | [简体中文](./README.md)
 
 
-# Warp Pilot
+# Tauri Vue Template
 
-A modern, production-ready desktop application built with **Tauri 2.0**, **Vue 3**, **Pinia**, and **Rust**. This project provides a solid foundation for building cross-platform desktop applications with native performance and modern web technologies.
+A modern, production-ready desktop application template built with **Tauri 2.0**, **Vue 3**, **Pinia**, and **Rust**. This project provides a solid foundation for building cross-platform desktop applications with native performance and modern web technologies.
 
 ## ✨ Features
 
 - 🚀 **Tauri 2.0** - Build smaller, faster, and more secure desktop applications
 - ⚡ **Vue 3** - Progressive JavaScript framework with Composition API
-- 📦 **Pinia** - Intuitive state management for Vue
+- 📦 **Pinia** - Intuitive state management with auto-persistence
+- 🛣️ **Vue Router 4** - Official router with Hash mode
 - 🦀 **Rust Backend** - High-performance, memory-safe backend
 - 📁 **File System Access** - Secure file operations through Tauri
 - 🎨 **Modern UI** - Clean, responsive interface with CSS Variables and theme system
-- 🔄 **Auto Import** - Automatic imports for Vue APIs and components
-- 🛠️ **Vue DevTools** - Integrated debugging tools
+- 🔄 **Auto Import** - Automatic imports for Vue APIs, components, and router
+- 💾 **State Persistence** - Auto-persist with pinia-plugin-persistedstate
+- 🛠️ **Vue DevTools** - Development environment debugging tools
+- 📦 **Build Optimization** - Code splitting, size optimization, LTO
 - 🤖 **CI/CD** - Automated multi-platform builds and releases
 - 🔧 **Developer Friendly** - Hot reload, ESLint, Prettier, and more
 
@@ -66,11 +69,13 @@ The built application will be in `src-tauri/target/release/bundle/`.
 
 ### Frontend
 - **Vue 3** - Progressive JavaScript framework
+- **Vue Router 4** - Official router (Hash mode)
 - **Pinia** - State management
+- **pinia-plugin-persistedstate** - State persistence plugin
 - **Vite 7** - Next generation frontend tooling
 - **unplugin-auto-import** - Automatic API imports
 - **unplugin-vue-components** - Automatic component imports
-- **Vue DevTools** - Integrated debugging
+- **Vue DevTools** - Development debugging tools
 - **CSS Variables** - Modern styling approach
 
 ### Backend
@@ -88,7 +93,7 @@ The built application will be in `src-tauri/target/release/bundle/`.
 ## 🏗️ Project Structure
 
 ```
-warp-pilot/
+tauri-vue-template/
 ├── .github/
 │   └── workflows/               # GitHub Actions CI/CD
 │       ├── release.yml          # Multi-platform release

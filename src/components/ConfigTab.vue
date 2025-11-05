@@ -77,9 +77,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { useAppStore } from '@stores/app'
-import { useSettingsStore } from '@stores/settings'
+// ref, onMounted, computed 已通过 unplugin-auto-import 自动导入
+// useAppStore, useSettingsStore 已通过 unplugin-auto-import 自动导入
 import { useToast } from '@composables/useToast'
 
 // 使用 Stores 和 Composables

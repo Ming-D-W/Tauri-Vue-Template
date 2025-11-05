@@ -1,6 +1,8 @@
 // Vue 和 Pinia API 已通过 unplugin-auto-import 自动导入
 // createApp, createPinia 等无需手动导入
 import App from './App.vue'
+import router from './router'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import './assets/styles/global.css'
 import './assets/styles/dark.css'
 import './assets/iconfont/iconfont.css'
@@ -13,7 +15,11 @@ const app = createApp(App)
 
 // 添加 Pinia 状态管理
 const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
+
+// 添加 Vue Router
+app.use(router)
 
 // 全局错误处理
 app.config.errorHandler = (err, instance, info) => {
@@ -45,8 +51,8 @@ window.addEventListener('error', event => {
 const appStore = useAppStore()
 const settingsStore = useSettingsStore()
 
-// 加载设置（在挂载之前，确保主题正确应用）
-settingsStore.loadSettings()
+// 初始化设置（持久化插件会自动加载数据，这里只需要应用到 DOM）
+settingsStore.initializeSettings()
 
 // 初始化应用数据
 appStore.initialize().catch(err => {
@@ -59,9 +65,10 @@ app.mount('#app')
 // 开发环境日志
 if (import.meta.env.MODE === 'development') {
   logger.info('🚀 Tauri Vue Template 已启动')
-  logger.info('📦 Vue 3 + Pinia 框架已加载')
-  logger.info('⚡ Tauri 2.0 + Rust 后端支持')
+  logger.info('📦 Vue 3 + Pinia 状态管理已加载')
+  logger.info('🛣️ Vue Router 路由系统已加载')
+  logger.info('⚡ Tauri 2.0 + Rust 后端已就绪')
   logger.info('🛡️ 全局错误处理已启用')
   logger.info('🎨 主题系统已加载')
-  logger.info('💾 设置已从本地存储加载')
+  logger.info('💾 状态持久化已启用')
 }

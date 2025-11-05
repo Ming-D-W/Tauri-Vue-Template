@@ -8,14 +8,16 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     vue(),
-    vueDevTools(),
+    // 仅在开发环境加载 Vue DevTools
+    mode === 'development' && vueDevTools(),
     AutoImport({
       imports: [
         'vue',
         'pinia',
+        'vue-router',
         {
           '@/stores': ['useAppStore', 'useSettingsStore'],
         },
@@ -29,15 +31,31 @@ export default defineConfig({
     }),
     Components({
       dts: 'components.d.js',
+      dirs: ['src/components', 'src/components/common'],
+      extensions: ['vue'],
+      deep: true,
+      directoryAsNamespace: false,
     }),
-  ],
+  ].filter(Boolean),
   base: './',
   build: {
     outDir: path.resolve(__dirname, 'dist'),
     emptyOutDir: true,
     target: 'esnext',
     minify: !process.env.TAURI_ENV_DEBUG ? 'esbuild' : false,
-    sourcemap: !!process.env.TAURI_ENV_DEBUG
+    sourcemap: !!process.env.TAURI_ENV_DEBUG,
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vue-vendor': ['vue', 'pinia', 'vue-router'],
+          'tauri-vendor': ['@tauri-apps/api'],
+        },
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+      },
+    },
   },
   resolve: {
     alias: {
@@ -63,4 +81,4 @@ export default defineConfig({
   },
   clearScreen: false,
   envPrefix: ['VITE_', 'TAURI_']
-})
+}))

@@ -2,34 +2,20 @@
   <div class="app-container">
     <!-- 自定义标题栏 -->
     <div class="custom-titlebar app-title" data-tauri-drag-region>
-      {{ currentTabLabel }}
+      {{ currentPageTitle }}
     </div>
 
     <!-- 主布局容器 -->
     <div class="app-main-layout">
       <!-- 主内容区域 -->
       <div class="main-content">
-        <!-- 标签内容 -->
+        <!-- 路由视图 -->
         <main class="tab-content-container">
-          <!-- 控制台 -->
-          <div v-show="currentTab === 'popup'" class="tab-content">
-            <PopupTab />
-          </div>
-
-          <!-- 组件示例 -->
-          <div v-show="currentTab === 'examples'" class="tab-content">
-            <ExamplesTab />
-          </div>
-
-          <!-- 系统工具 -->
-          <div v-show="currentTab === 'tools'" class="tab-content">
-            <ToolsTab />
-          </div>
-
-          <!-- 应用设置 -->
-          <div v-show="currentTab === 'config'" class="tab-content">
-            <ConfigTab />
-          </div>
+          <router-view v-slot="{ Component }">
+            <transition name="fade" mode="out-in">
+              <component :is="Component" class="tab-content" />
+            </transition>
+          </router-view>
         </main>
 
         <!-- 底部组件 -->
@@ -40,14 +26,14 @@
       <nav class="tab-navigation">
         <div class="tab-buttons">
           <button
-            v-for="tab in tabs"
-            :key="tab.id"
+            v-for="route in navRoutes"
+            :key="route.path"
             class="tab-btn"
-            :class="{ active: currentTab === tab.id }"
-            :data-label="tab.label"
-            @click="switchTab(tab.id)"
+            :class="{ active: isActiveRoute(route.path) }"
+            :data-label="route.meta.title"
+            @click="navigateTo(route.path)"
           >
-            <i class="tab-icon iconfont" :class="tab.icon"></i>
+            <i class="tab-icon iconfont" :class="route.meta.icon"></i>
           </button>
         </div>
 
@@ -64,36 +50,30 @@
 </template>
 
 <script setup>
-// ref, computed 等 Vue API 已通过 unplugin-auto-import 自动导入
-// 组件导入保留（也可以配置自动导入，但为了清晰性暂时保留）
-import PopupTab from './components/PopupTab.vue'
-import ExamplesTab from './components/ExamplesTab.vue'
-import ToolsTab from './components/ToolsTab.vue'
-import ConfigTab from './components/ConfigTab.vue'
-import MainFooter from './components/MainFooter.vue'
-import ThemeToggle from './components/common/ThemeToggle.vue'
-import Toast from './components/common/Toast.vue'
+// ref, computed, useRouter, useRoute 等 API 已通过 unplugin-auto-import 自动导入
+// 组件已通过 unplugin-vue-components 自动导入，无需手动导入
 
-// 响应式数据
-const currentTab = ref('examples')
+const router = useRouter()
+const route = useRoute()
 
-// 标签配置
-const tabs = [
-  { id: 'popup', label: '控制台', icon: 'icon-kaishiliucheng' },
-  { id: 'examples', label: '组件示例', icon: 'icon-fangwenlingpai' },
-  { id: 'tools', label: '系统工具', icon: 'icon-youxiang' },
-  { id: 'config', label: '应用设置', icon: 'icon-shezhi' },
-]
-
-// 计算属性
-const currentTabLabel = computed(() => {
-  const activeTab = tabs.find(tab => tab.id === currentTab.value)
-  return activeTab ? activeTab.label : '控制台'
+// 导航路由配置（从路由表中过滤出需要显示在导航中的路由）
+const navRoutes = computed(() => {
+  return router.getRoutes().filter(r => r.meta && r.meta.title && r.path !== '/')
 })
 
-// 方法
-const switchTab = tabId => {
-  currentTab.value = tabId
+// 当前页面标题
+const currentPageTitle = computed(() => {
+  return route.meta.title || 'Tauri Vue Template'
+})
+
+// 判断路由是否激活
+const isActiveRoute = path => {
+  return route.path === path
+}
+
+// 导航到指定路由
+const navigateTo = path => {
+  router.push(path)
 }
 </script>
 
@@ -164,6 +144,25 @@ const switchTab = tabId => {
   z-index: 1;
   color: var(--text-primary);
 }
+
+.tab-content {
+  padding: var(--spacing-lg);
+  height: 100%;
+  overflow-y: auto;
+  width: 100%;
+}
+
+/* 路由过渡动画 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 
 .tab-navigation {
   display: flex;

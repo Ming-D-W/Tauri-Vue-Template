@@ -5,21 +5,23 @@ import { logger } from '@/utils/logger'
 /**
  * 设置 Store
  * 管理应用设置，如主题、语言、自动更新等
+ * 使用 pinia-plugin-persistedstate 自动持久化到 localStorage
  */
-export const useSettingsStore = defineStore('settings', () => {
-  // ==================== State ====================
-  const theme = ref('light')
-  const language = ref('zh-CN')
-  const autoUpdate = ref(true)
-  const enableNotifications = ref(true)
-  const enableSounds = ref(true)
-  const fontSize = ref('medium') // small, medium, large
+export const useSettingsStore = defineStore(
+  'settings',
+  () => {
+    // ==================== State ====================
+    const theme = ref('light')
+    const language = ref('zh-CN')
+    const autoUpdate = ref(true)
+    const enableNotifications = ref(true)
+    const enableSounds = ref(true)
+    const fontSize = ref('medium') // small, medium, large
 
-  // ==================== Constants ====================
-  const STORAGE_KEY = 'app-settings'
-  const AVAILABLE_THEMES = ['light', 'dark', 'auto']
-  const AVAILABLE_LANGUAGES = ['zh-CN', 'en-US']
-  const AVAILABLE_FONT_SIZES = ['small', 'medium', 'large']
+    // ==================== Constants ====================
+    const AVAILABLE_THEMES = ['light', 'dark', 'auto']
+    const AVAILABLE_LANGUAGES = ['zh-CN', 'en-US']
+    const AVAILABLE_FONT_SIZES = ['small', 'medium', 'large']
 
   // ==================== Actions ====================
 
@@ -156,68 +158,13 @@ export const useSettingsStore = defineStore('settings', () => {
   }
 
   /**
-   * 保存设置到 localStorage
+   * 初始化设置（应用主题和字体大小）
+   * 由于使用了持久化插件，数据会自动加载，这里只需要应用到 DOM
    */
-  function saveSettings() {
-    const settings = {
-      theme: theme.value,
-      language: language.value,
-      autoUpdate: autoUpdate.value,
-      enableNotifications: enableNotifications.value,
-      enableSounds: enableSounds.value,
-      fontSize: fontSize.value,
-    }
-
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
-      logger.debug('Settings saved to localStorage')
-    } catch (err) {
-      logger.error('Failed to save settings:', err)
-    }
-  }
-
-  /**
-   * 从 localStorage 加载设置
-   */
-  function loadSettings() {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY)
-
-      if (saved) {
-        const settings = JSON.parse(saved)
-
-        // 恢复设置
-        if (settings.theme) {
-          setTheme(settings.theme)
-        }
-        if (settings.language) {
-          language.value = settings.language
-        }
-        if (typeof settings.autoUpdate === 'boolean') {
-          autoUpdate.value = settings.autoUpdate
-        }
-        if (typeof settings.enableNotifications === 'boolean') {
-          enableNotifications.value = settings.enableNotifications
-        }
-        if (typeof settings.enableSounds === 'boolean') {
-          enableSounds.value = settings.enableSounds
-        }
-        if (settings.fontSize) {
-          setFontSize(settings.fontSize)
-        }
-
-        logger.info('Settings loaded from localStorage')
-      } else {
-        // 首次运行，应用默认主题
-        applyTheme(theme.value)
-        applyFontSize(fontSize.value)
-      }
-    } catch (err) {
-      logger.error('Failed to load settings:', err)
-      // 加载失败时应用默认设置
-      applyTheme(theme.value)
-      applyFontSize(fontSize.value)
-    }
+  function initializeSettings() {
+    applyTheme(theme.value)
+    applyFontSize(fontSize.value)
+    logger.info('Settings initialized and applied to DOM')
   }
 
   /**
@@ -233,7 +180,6 @@ export const useSettingsStore = defineStore('settings', () => {
 
     applyTheme('light')
     applyFontSize('medium')
-    saveSettings()
 
     logger.info('Settings reset to defaults')
   }
@@ -293,45 +239,44 @@ export const useSettingsStore = defineStore('settings', () => {
     })
   }
 
-  // 监听设置变化，自动保存
-  watch(
-    [theme, language, autoUpdate, enableNotifications, enableSounds, fontSize],
-    () => {
-      saveSettings()
-    },
-    { deep: true }
-  )
-
   // ==================== Return ====================
-  return {
-    // State
-    theme,
-    language,
-    autoUpdate,
-    enableNotifications,
-    enableSounds,
-    fontSize,
+    return {
+      // State
+      theme,
+      language,
+      autoUpdate,
+      enableNotifications,
+      enableSounds,
+      fontSize,
 
-    // Constants
-    AVAILABLE_THEMES,
-    AVAILABLE_LANGUAGES,
-    AVAILABLE_FONT_SIZES,
+      // Constants
+      AVAILABLE_THEMES,
+      AVAILABLE_LANGUAGES,
+      AVAILABLE_FONT_SIZES,
 
-    // Actions
-    setTheme,
-    toggleTheme,
-    setLanguage,
-    setAutoUpdate,
-    toggleAutoUpdate,
-    setNotifications,
-    toggleNotifications,
-    setSounds,
-    toggleSounds,
-    setFontSize,
-    loadSettings,
-    saveSettings,
-    resetSettings,
-    exportSettings,
-    importSettings,
+      // Actions
+      setTheme,
+      toggleTheme,
+      setLanguage,
+      setAutoUpdate,
+      toggleAutoUpdate,
+      setNotifications,
+      toggleNotifications,
+      setSounds,
+      toggleSounds,
+      setFontSize,
+      initializeSettings,
+      resetSettings,
+      exportSettings,
+      importSettings,
+    }
+  },
+  {
+    // 持久化配置
+    persist: {
+      key: 'app-settings',
+      storage: localStorage,
+      paths: ['theme', 'language', 'autoUpdate', 'enableNotifications', 'enableSounds', 'fontSize'],
+    },
   }
-})
+)

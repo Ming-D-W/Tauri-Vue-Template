@@ -1,19 +1,22 @@
 [English](./README.en.md) | 简体中文
 
-# Warp Pilot
+# Tauri Vue Template
 
-一个现代化、生产就绪的桌面应用程序，基于 **Tauri 2.0**、**Vue 3**、**Pinia** 和 **Rust** 构建。本项目为构建具有原生性能和现代 Web 技术的跨平台桌面应用程序提供了坚实的基础。
+一个现代化、生产就绪的桌面应用程序模板，基于 **Tauri 2.0**、**Vue 3**、**Pinia** 和 **Rust** 构建。本项目为构建具有原生性能和现代 Web 技术的跨平台桌面应用程序提供了坚实的基础。
 
 ## ✨ 特性
 
 - 🚀 **Tauri 2.0** - 构建更小、更快、更安全的桌面应用程序
 - ⚡ **Vue 3** - 渐进式 JavaScript 框架，支持组合式 API
-- 📦 **Pinia** - 直观的 Vue 状态管理
+- 📦 **Pinia** - 直观的 Vue 状态管理，支持自动持久化
+- 🛣️ **Vue Router 4** - 官方路由管理器，支持 Hash 模式
 - 🦀 **Rust 后端** - 高性能、内存安全的后端
 - 📁 **文件系统访问** - 通过 Tauri 进行安全的文件操作
 - 🎨 **现代化 UI** - 简洁、响应式的界面，支持 CSS 变量和主题系统
-- 🔄 **自动导入** - 自动导入 Vue API 和组件
-- 🛠️ **Vue DevTools** - 集成调试工具
+- 🔄 **自动导入** - 自动导入 Vue API、组件和路由
+- 💾 **状态持久化** - 使用 pinia-plugin-persistedstate 自动持久化
+- 🛠️ **Vue DevTools** - 开发环境集成调试工具
+- 📦 **构建优化** - 代码分包、体积优化、LTO 优化
 - 🤖 **CI/CD** - 自动化多平台构建和发布
 - 🔧 **开发者友好** - 热重载、ESLint、Prettier 等
 
@@ -65,11 +68,13 @@ npm run tauri:build
 
 ### 前端
 - **Vue 3** - 渐进式 JavaScript 框架
+- **Vue Router 4** - 官方路由管理器（Hash 模式）
 - **Pinia** - 状态管理
+- **pinia-plugin-persistedstate** - 状态持久化插件
 - **Vite 7** - 下一代前端构建工具
 - **unplugin-auto-import** - 自动导入 API
 - **unplugin-vue-components** - 自动导入组件
-- **Vue DevTools** - 集成调试工具
+- **Vue DevTools** - 开发环境调试工具
 - **CSS Variables** - 现代化样式方案
 
 ### 后端
@@ -87,7 +92,7 @@ npm run tauri:build
 ## 🏗️ 项目结构
 
 ```
-warp-pilot/
+tauri-vue-template/
 ├── .github/
 │   └── workflows/               # GitHub Actions CI/CD
 │       ├── release.yml          # 多平台发布
@@ -134,22 +139,79 @@ warp-pilot/
 
 ### 自动导入
 
-本项目使用 `unplugin-auto-import` 自动导入 Vue 和 Pinia API。你无需手动导入：
+本项目使用 `unplugin-auto-import` 和 `unplugin-vue-components` 实现自动导入：
 
 ```javascript
 // ❌ 不再需要手动导入这些
 // import { ref, computed, watch } from 'vue'
 // import { defineStore } from 'pinia'
+// import { useRouter, useRoute } from 'vue-router'
+// import MyComponent from './components/MyComponent.vue'
 
 // ✅ 直接使用即可
 const count = ref(0)
 const doubled = computed(() => count.value * 2)
+const router = useRouter()
 ```
 
-已配置的导入包括：
-- Vue API（ref、computed、watch、onMounted 等）
-- Pinia API（defineStore、storeToRefs 等）
-- 自定义 store（useAppStore、useSettingsStore）
+已配置的自动导入：
+- **Vue API**：ref、computed、watch、onMounted 等
+- **Pinia API**：defineStore、storeToRefs 等
+- **Vue Router API**：useRouter、useRoute 等
+- **自定义 Store**：useAppStore、useSettingsStore
+- **组件**：src/components 目录下的所有 .vue 组件
+
+### 路由系统
+
+使用 Vue Router 4 的 Hash 模式，适合桌面应用：
+
+```javascript
+// 路由配置在 src/router/index.js
+// 路由会自动懒加载组件
+const routes = [
+  {
+    path: '/examples',
+    name: 'Examples',
+    component: () => import('@/components/ExamplesTab.vue'),
+    meta: { title: '组件示例', icon: 'icon-fangwenlingpai' }
+  }
+]
+```
+
+### 状态持久化
+
+使用 `pinia-plugin-persistedstate` 自动持久化状态到 localStorage：
+
+```javascript
+export const useMyStore = defineStore(
+  'myStore',
+  () => {
+    const data = ref('hello')
+    return { data }
+  },
+  {
+    persist: {
+      key: 'my-store',
+      storage: localStorage,
+      paths: ['data'], // 指定需要持久化的字段
+    }
+  }
+)
+```
+
+### 构建优化
+
+项目已配置多项构建优化：
+
+**前端优化**：
+- 代码分包（Vue/Pinia/Router 单独打包）
+- 资源文件分类存放
+- 开发环境禁用 DevTools 打包
+
+**后端优化**：
+- LTO（Link-Time Optimization）：fat 模式
+- 优化级别：z（最小体积）
+- Strip 调试符号
 
 ### Tauri 配置
 

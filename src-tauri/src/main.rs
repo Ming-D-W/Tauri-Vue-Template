@@ -1,6 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    warp_pilot_lib::run()
+    tauri_vue_template_lib::run()
 }
 

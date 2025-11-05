@@ -6,8 +6,11 @@ import { logger } from '@/utils/logger'
 /**
  * 应用全局 Store
  * 管理应用级别的状态，如版本信息、数据目录等
+ * 使用 pinia-plugin-persistedstate 自动持久化到 localStorage
  */
-export const useAppStore = defineStore('app', () => {
+export const useAppStore = defineStore(
+  'app',
+  () => {
   // ==================== State ====================
   const version = ref('')
   const dataDir = ref('')
@@ -123,25 +126,34 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
-  // ==================== Return ====================
-  return {
-    // State
-    version,
-    dataDir,
-    homeDir,
-    systemInfo,
-    isInitialized,
-    isLoading,
-    error,
+    // ==================== Return ====================
+    return {
+      // State
+      version,
+      dataDir,
+      homeDir,
+      systemInfo,
+      isInitialized,
+      isLoading,
+      error,
 
-    // Getters
-    appInfo,
-    hasError,
+      // Getters
+      appInfo,
+      hasError,
 
-    // Actions
-    initialize,
-    reset,
-    clearError,
-    getSystemInfo,
+      // Actions
+      initialize,
+      reset,
+      clearError,
+      getSystemInfo,
+    }
+  },
+  {
+    // 持久化配置
+    persist: {
+      key: 'app-store',
+      storage: localStorage,
+      paths: ['version', 'dataDir', 'homeDir', 'systemInfo'],
+    },
   }
-})
+)

@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Warp Pilot",
+  "productName": "Tauri Vue Template",
   "version": "1.0.0",
-  "identifier": "com.example.warp-pilot",
+  "identifier": "com.example.tauri-vue-template",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Warp Pilot",
+        "title": "Tauri Vue Template",
         "width": 800,
         "height": 600,
         "resizable": false,
