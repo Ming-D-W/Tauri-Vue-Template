@@ -342,34 +342,40 @@ ol {
   display: inline-block;
 }
 
-/* iconfont 图标优化 */
-.iconfont {
-  display: inline-block;
-  vertical-align: middle;
-  line-height: 1;
-}
-
-/* 标签页图标特殊样式 */
-.tab-icon.iconfont {
+/* 图标样式优化 */
+.tab-icon {
   font-size: var(--font-size-lg);
   transition: all var(--transition-fast);
-}
-
-/* 空状态图标样式 */
-.empty-icon .iconfont {
-  font-size: 48px;
-  color: var(--text-secondary);
-  opacity: 0.6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 按钮中的图标样式 */
-.btn .iconfont {
+.btn svg {
   margin-right: var(--spacing-xs);
-  font-size: var(--font-size-sm);
+  width: 1em;
+  height: 1em;
 }
 
 /* 标题中的图标样式 */
-h2 .iconfont {
+h2 svg,
+h3 svg {
   margin-right: var(--spacing-sm);
   color: var(--primary-color);
+  vertical-align: middle;
+}
+
+/* 旋转动画 */
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

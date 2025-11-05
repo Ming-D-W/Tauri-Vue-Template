@@ -9,7 +9,7 @@
         :data-label="tab.title"
         @click="navigateTo(tab.path)"
       >
-        <i class="tab-icon iconfont" :class="tab.icon"></i>
+        <component :is="tab.icon" class="tab-icon" />
       </button>
     </div>
 

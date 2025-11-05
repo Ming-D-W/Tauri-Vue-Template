@@ -6,7 +6,9 @@
       :aria-label="`切换主题，当前：${themeName}`"
       @click="handleToggle"
     >
-      <span class="theme-icon">{{ themeIcon }}</span>
+      <span class="theme-icon">
+        <component :is="getIconComponent()" />
+      </span>
       <span v-if="showLabel" class="theme-label">{{ themeName }}</span>
     </button>
   </div>
@@ -14,6 +16,9 @@
 
 <script setup>
 import { useTheme } from '@composables/useTheme'
+import IconMdiWhiteBalanceSunny from '~icons/mdi/white-balance-sunny'
+import IconMdiMoonWaningCrescent from '~icons/mdi/moon-waning-crescent'
+import IconMdiThemeLightDark from '~icons/mdi/theme-light-dark'
 
 // Props
 const props = defineProps({
@@ -25,6 +30,16 @@ const props = defineProps({
 
 // 使用主题 composable
 const { theme, themeIcon, themeName, toggleTheme } = useTheme()
+
+// 获取图标组件
+function getIconComponent() {
+  const iconMap = {
+    light: IconMdiWhiteBalanceSunny,
+    dark: IconMdiMoonWaningCrescent,
+    auto: IconMdiThemeLightDark,
+  }
+  return iconMap[themeIcon.value] || IconMdiWhiteBalanceSunny
+}
 
 // 切换主题
 function handleToggle() {

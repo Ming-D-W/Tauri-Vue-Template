@@ -4,7 +4,10 @@ import path from 'path'
 import { fileURLToPath } from 'node:url'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
+import Icons from 'unplugin-icons/vite'
+import IconsResolver from 'unplugin-icons/resolver'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -39,6 +42,23 @@ export default defineConfig(({ mode }) => ({
       extensions: ['vue'],
       deep: true,
       directoryAsNamespace: false,
+      resolvers: [
+        IconsResolver({
+          prefix: 'icon',
+        }),
+      ],
+    }),
+    Icons({
+      autoInstall: true,
+      compiler: 'vue3',
+      customCollections: {
+        // 自定义图标集：从 src/assets/icons 目录加载 SVG 文件
+        custom: FileSystemIconLoader(
+          './src/assets/icons',
+          // 自动为 SVG 添加 currentColor 以支持颜色控制
+          svg => svg.replace(/^<svg /, '<svg fill="currentColor" ')
+        ),
+      },
     }),
   ].filter(Boolean),
   base: './',

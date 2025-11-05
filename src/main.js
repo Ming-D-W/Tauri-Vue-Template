@@ -5,7 +5,6 @@ import router from './router'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import './assets/styles/global.css'
 import './assets/styles/dark.css'
-import './assets/iconfont/iconfont.css'
 import { logger } from './utils/logger'
 import { handleError } from './utils/errorHandler'
 // useAppStore, useSettingsStore 已通过 unplugin-auto-import 自动导入

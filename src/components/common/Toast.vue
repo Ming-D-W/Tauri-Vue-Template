@@ -3,7 +3,7 @@
     <Transition name="toast">
       <div v-if="show" :class="['toast', `toast-${type}`]" role="alert" aria-live="polite">
         <div class="toast-icon">
-          <span>{{ getIcon() }}</span>
+          <component :is="getIconComponent()" />
         </div>
         <div class="toast-content">
           <div class="toast-message">{{ message }}</div>
@@ -16,6 +16,10 @@
 
 <script setup>
 import { useToast } from '@composables/useToast'
+import IconMdiCheckCircle from '~icons/mdi/check-circle'
+import IconMdiCloseCircle from '~icons/mdi/close-circle'
+import IconMdiAlertCircle from '~icons/mdi/alert-circle'
+import IconMdiInformationOutline from '~icons/mdi/information-outline'
 
 // 禁用属性继承（因为使用了 Teleport 根节点）
 defineOptions({
@@ -28,15 +32,15 @@ defineEmits([])
 // 使用 Toast composable（全局单例）
 const { show, type, message, hideToast } = useToast()
 
-// 获取图标
-function getIcon() {
+// 获取图标组件
+function getIconComponent() {
   const iconMap = {
-    success: '✓',
-    error: '✕',
-    warning: '⚠',
-    info: 'ℹ',
+    success: IconMdiCheckCircle,
+    error: IconMdiCloseCircle,
+    warning: IconMdiAlertCircle,
+    info: IconMdiInformationOutline,
   }
-  return iconMap[type.value] || 'ℹ'
+  return iconMap[type.value] || IconMdiInformationOutline
 }
 </script>
 
@@ -164,26 +168,5 @@ function getIcon() {
   .toast-leave-to {
     transform: translateY(-100%);
   }
-}
-
-/* 图标字体回退 */
-.toast-icon i::before {
-  content: '';
-}
-
-.toast-success .toast-icon i::before {
-  content: '✓';
-}
-
-.toast-error .toast-icon i::before {
-  content: '✕';
-}
-
-.toast-warning .toast-icon i::before {
-  content: '⚠';
-}
-
-.toast-info .toast-icon i::before {
-  content: 'ℹ';
 }
 </style>

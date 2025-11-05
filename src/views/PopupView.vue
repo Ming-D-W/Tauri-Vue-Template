@@ -2,31 +2,31 @@
   <div class="welcome-container">
     <div class="welcome-content">
       <div class="welcome-header">
-        <h1>🚀 Welcome to Tauri Vue Template</h1>
+        <h1><icon-mdi-rocket-launch /> Welcome to Tauri Vue Template</h1>
         <p class="subtitle">A modern desktop application template built with Tauri 2.0, Vue 3, and Rust</p>
       </div>
 
       <div class="features-grid">
         <div class="feature-card">
-          <div class="feature-icon">⚡</div>
+          <div class="feature-icon"><icon-mdi-lightning-bolt /></div>
           <h3>Fast & Lightweight</h3>
           <p>Built with Tauri 2.0 for native performance and small bundle size</p>
         </div>
 
         <div class="feature-card">
-          <div class="feature-icon">🎨</div>
+          <div class="feature-icon"><icon-mdi-palette /></div>
           <h3>Modern UI</h3>
           <p>Vue 3 with Composition API and reactive state management</p>
         </div>
 
         <div class="feature-card">
-          <div class="feature-icon">💾</div>
+          <div class="feature-icon"><icon-mdi-database /></div>
           <h3>Local Database</h3>
           <p>SQLite integration for persistent data storage</p>
         </div>
 
         <div class="feature-card">
-          <div class="feature-icon">🔧</div>
+          <div class="feature-icon"><icon-mdi-tools /></div>
           <h3>Developer Friendly</h3>
           <p>Hot reload, TypeScript support, and comprehensive documentation</p>
         </div>

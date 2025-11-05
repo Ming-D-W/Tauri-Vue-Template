@@ -32,15 +32,15 @@ export function useTheme() {
   const isLight = computed(() => !isDark.value)
 
   /**
-   * 主题图标
+   * 主题图标组件名称
    */
   const themeIcon = computed(() => {
     const iconMap = {
-      light: '☀️',
-      dark: '🌙',
-      auto: '🔄',
+      light: 'light',
+      dark: 'dark',
+      auto: 'auto',
     }
-    return iconMap[settingsStore.theme] || '☀️'
+    return iconMap[settingsStore.theme] || 'light'
   })
 
   /**

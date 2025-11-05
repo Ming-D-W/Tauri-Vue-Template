@@ -1,7 +1,7 @@
 <template>
   <div class="config-tab-container">
     <div class="header-section">
-      <h2><i class="iconfont icon-shezhi"></i> 应用设置</h2>
+      <h2><icon-mdi-cog /> 应用设置</h2>
       <p class="description">管理应用的各项配置和偏好设置</p>
     </div>
 
@@ -9,7 +9,7 @@
     <div class="config-sections">
       <!-- 外观设置 -->
       <div class="config-section">
-        <h3>🎨 外观设置</h3>
+        <h3><icon-mdi-palette /> 外观设置</h3>
         <div class="config-items">
           <div class="config-item">
             <label class="config-label">主题模式:</label>
@@ -43,7 +43,9 @@
             <label class="config-label">操作:</label>
             <div class="database-actions">
               <button class="btn btn-danger" :disabled="isClearing" @click="clearLocalStorage">
-                {{ isClearing ? '🔄 清空中...' : '🗑️ 清空 LocalStorage' }}
+                <icon-mdi-loading v-if="isClearing" class="spinning" />
+                <icon-mdi-delete v-else />
+                {{ isClearing ? '清空中...' : '清空 LocalStorage' }}
               </button>
             </div>
           </div>
@@ -52,7 +54,7 @@
 
       <!-- 系统信息 -->
       <div class="config-section">
-        <h3>💻 系统信息</h3>
+        <h3><icon-mdi-information /> 系统信息</h3>
         <div class="config-items">
           <div class="config-item">
             <label class="config-label">应用版本:</label>
