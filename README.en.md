@@ -203,9 +203,6 @@ const version = await api.app.getVersion()
 // Get data directory
 const dataDir = await api.app.getDataDir()
 
-// Get home directory
-const homeDir = await api.system.getHomeDir()
-
 // Read file
 const content = await api.system.readFile(filePath)
 
@@ -217,9 +214,6 @@ const exists = await api.system.fileExists(filePath)
 
 // Get system information
 const sysInfo = await api.system.getSystemInfo()
-
-// Execute system command
-const result = await api.system.executeCommand('ls', ['-la'])
 ```
 
 ### State Management

@@ -62,32 +62,6 @@
       <section class="tool-section">
         <h3><icon-mdi-monitor /> 系统工具</h3>
         <div class="tool-grid">
-          <!-- 系统命令执行 -->
-          <div class="tool-card">
-            <h4>执行系统命令</h4>
-            <div class="tool-content">
-              <input
-                v-model="command"
-                type="text"
-                class="input"
-                placeholder="输入命令 (例如: ls, pwd, echo hello)"
-                @keyup.enter="executeCommand"
-              />
-              <button class="btn btn-primary" :disabled="isExecuting" @click="executeCommand">
-                <span v-if="isExecuting">⏳ 执行中...</span>
-                <span v-else>执行命令</span>
-              </button>
-              <div v-if="commandOutput" class="output-box">
-                <p class="output-title">输出:</p>
-                <pre>{{ commandOutput }}</pre>
-              </div>
-              <div v-if="commandError" class="error-box">
-                <p class="error-title">错误:</p>
-                <pre>{{ commandError }}</pre>
-              </div>
-            </div>
-          </div>
-
           <!-- 系统信息 -->
           <div class="tool-card">
             <h4>系统信息</h4>
@@ -107,15 +81,6 @@
                   <span class="info-value">{{ systemInfo.os_version }}</span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <!-- 主目录 -->
-          <div class="tool-card">
-            <h4>用户主目录</h4>
-            <div class="tool-content">
-              <button class="btn btn-primary" @click="getHomeDir">获取主目录</button>
-              <p v-if="homeDir" class="result-text">{{ homeDir }}</p>
             </div>
           </div>
         </div>
@@ -193,12 +158,7 @@ const saveContent = ref('')
 const savedFilePath = ref('')
 
 // 系统工具状态
-const command = ref('')
-const commandOutput = ref('')
-const commandError = ref('')
-const isExecuting = ref(false)
 const systemInfo = ref(null)
-const homeDir = ref('')
 
 // 实用工具状态
 const textToolInput = ref('')
@@ -303,46 +263,12 @@ const showSaveDialog = async () => {
 }
 
 // 系统工具方法
-const executeCommand = async () => {
-  if (!command.value) {
-    toast.warning('请输入命令')
-    return
-  }
-
-  isExecuting.value = true
-  commandOutput.value = ''
-  commandError.value = ''
-
-  try {
-    const result = await api.system.executeCommand(command.value)
-    commandOutput.value = result.stdout || '(无输出)'
-    if (result.stderr) {
-      commandError.value = result.stderr
-    }
-    toast.success('命令执行完成')
-  } catch (error) {
-    commandError.value = error.message
-    toast.error(`命令执行失败: ${error.message}`)
-  } finally {
-    isExecuting.value = false
-  }
-}
-
 const loadSystemInfo = async () => {
   try {
     systemInfo.value = await api.system.getSystemInfo()
     toast.success('系统信息已刷新')
   } catch (error) {
     toast.error(`获取系统信息失败: ${error.message}`)
-  }
-}
-
-const getHomeDir = async () => {
-  try {
-    homeDir.value = await api.system.getHomeDir()
-    toast.success('主目录已获取')
-  } catch (error) {
-    toast.error(`获取主目录失败: ${error.message}`)
   }
 }
 

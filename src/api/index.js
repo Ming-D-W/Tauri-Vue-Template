@@ -30,16 +30,6 @@ export const api = {
 
   // 系统操作
   system: {
-    getHomeDir: async () => {
-      const invoke = getTauriInvoke()
-      return await invoke('system_get_home_dir')
-    },
-
-    executeCommand: async (cmd, args) => {
-      const invoke = getTauriInvoke()
-      return await invoke('system_execute_command', { cmd, args })
-    },
-
     readFile: async (path) => {
       // 验证文件路径
       if (!validateFilePath(path)) {

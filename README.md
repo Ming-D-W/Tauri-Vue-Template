@@ -283,9 +283,6 @@ const version = await api.app.getVersion()
 // 获取数据目录
 const dataDir = await api.app.getDataDir()
 
-// 获取主目录
-const homeDir = await api.system.getHomeDir()
-
 // 读取文件
 const content = await api.system.readFile(filePath)
 
@@ -297,9 +294,6 @@ const exists = await api.system.fileExists(filePath)
 
 // 获取系统信息
 const sysInfo = await api.system.getSystemInfo()
-
-// 执行系统命令
-const result = await api.system.executeCommand('ls', ['-la'])
 ```
 
 ### 状态管理

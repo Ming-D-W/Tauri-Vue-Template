@@ -20,15 +20,15 @@
         </div>
 
         <div class="feature-card">
-          <div class="feature-icon"><icon-mdi-database /></div>
-          <h3>Local Database</h3>
-          <p>SQLite integration for persistent data storage</p>
+          <div class="feature-icon"><icon-mdi-state-machine /></div>
+          <h3>State Management</h3>
+          <p>Pinia for reactive state management with persistence</p>
         </div>
 
         <div class="feature-card">
           <div class="feature-icon"><icon-mdi-tools /></div>
           <h3>Developer Friendly</h3>
-          <p>Hot reload, TypeScript support, and comprehensive documentation</p>
+          <p>Hot reload, ESLint, and comprehensive documentation</p>
         </div>
       </div>
 

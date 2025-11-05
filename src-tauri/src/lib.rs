@@ -34,8 +34,6 @@ pub fn run() {
             get_app_version,
             get_app_data_dir,
             // System commands
-            commands::system_get_home_dir,
-            commands::system_execute_command,
             commands::system_read_file,
             commands::system_write_file,
             commands::system_file_exists,

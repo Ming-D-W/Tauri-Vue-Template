@@ -27,6 +27,7 @@ declare module 'vue' {
     IconMdiPalette: typeof import('~icons/mdi/palette')['default']
     IconMdiRocketLaunch: typeof import('~icons/mdi/rocket-launch')['default']
     IconMdiStarCircle: typeof import('~icons/mdi/star-circle')['default']
+    IconMdiStateMachine: typeof import('~icons/mdi/state-machine')['default']
     IconMdiTools: typeof import('~icons/mdi/tools')['default']
     MainFooter: typeof import('./src/components/layout/MainFooter.vue')['default']
     Modal: typeof import('./src/components/common/Modal.vue')['default']

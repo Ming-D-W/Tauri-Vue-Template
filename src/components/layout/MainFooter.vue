@@ -5,12 +5,6 @@
         <span class="app-name">Tauri Vue Template</span>
         <span class="version">v1.0.0</span>
       </div>
-      <div class="footer-center">
-        <div class="status-indicator">
-          <span class="status-dot offline"></span>
-          <span class="status-text">离线模式</span>
-        </div>
-      </div>
       <div class="footer-right">
         <span class="framework-info">Vue 3</span>
       </div>
@@ -19,8 +13,7 @@
 </template>
 
 <script setup>
-// 空的脚本 - 无任何业务逻辑
-console.log('🦶 MainFooter 组件已加载（空实现）')
+// MainFooter 组件
 </script>
 
 <style scoped>
@@ -55,37 +48,6 @@ console.log('🦶 MainFooter 组件已加载（空实现）')
   padding: 0 var(--spacing-xs);
   border-radius: var(--radius);
   font-size: var(--font-size-xs);
-}
-
-.footer-center {
-  display: flex;
-  align-items: center;
-}
-
-.status-indicator {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--gray-400);
-}
-
-.status-dot.online {
-  background: var(--success-color);
-}
-
-.status-dot.offline {
-  background: var(--gray-400);
-}
-
-.status-text {
-  font-size: var(--font-size-xs);
-  color: var(--text-muted);
 }
 
 .footer-right {

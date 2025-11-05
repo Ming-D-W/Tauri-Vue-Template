@@ -14,7 +14,6 @@ export const useAppStore = defineStore(
     // ==================== State ====================
     const version = ref('')
     const dataDir = ref('')
-    const homeDir = ref('')
     const systemInfo = ref(null)
     const isInitialized = ref(false)
     const isLoading = ref(false)
@@ -24,7 +23,6 @@ export const useAppStore = defineStore(
     const appInfo = computed(() => ({
       version: version.value,
       dataDir: dataDir.value,
-      homeDir: homeDir.value,
       systemInfo: systemInfo.value,
       isInitialized: isInitialized.value,
     }))
@@ -50,17 +48,13 @@ export const useAppStore = defineStore(
         logger.info('Initializing app...')
 
         // 并行获取应用信息
-        const [appVersion, appDataDir, appHomeDir, sysInfo] = await Promise.all([
+        const [appVersion, appDataDir, sysInfo] = await Promise.all([
           api.app.getVersion().catch(err => {
             logger.warn('Failed to get app version:', err)
             return 'Unknown'
           }),
           api.app.getDataDir().catch(err => {
             logger.warn('Failed to get data dir:', err)
-            return ''
-          }),
-          api.system.getHomeDir().catch(err => {
-            logger.warn('Failed to get home dir:', err)
             return ''
           }),
           api.system.getSystemInfo().catch(err => {
@@ -71,14 +65,12 @@ export const useAppStore = defineStore(
 
         version.value = appVersion
         dataDir.value = appDataDir
-        homeDir.value = appHomeDir
         systemInfo.value = sysInfo
         isInitialized.value = true
 
         logger.info('App initialized successfully', {
           version: version.value,
           dataDir: dataDir.value,
-          homeDir: homeDir.value,
           systemInfo: systemInfo.value,
         })
       } catch (err) {
@@ -96,7 +88,6 @@ export const useAppStore = defineStore(
     function reset() {
       version.value = ''
       dataDir.value = ''
-      homeDir.value = ''
       systemInfo.value = null
       isInitialized.value = false
       isLoading.value = false
@@ -131,7 +122,6 @@ export const useAppStore = defineStore(
       // State
       version,
       dataDir,
-      homeDir,
       systemInfo,
       isInitialized,
       isLoading,
@@ -153,7 +143,7 @@ export const useAppStore = defineStore(
     persist: {
       key: 'app-store',
       storage: localStorage,
-      paths: ['version', 'dataDir', 'homeDir', 'systemInfo'],
+      paths: ['version', 'dataDir', 'systemInfo'],
     },
   }
 )

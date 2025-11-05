@@ -1,14 +1,7 @@
-use std::process::Command;
 use std::fs;
 use std::path::Path;
+use std::process::Command;
 use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct CommandResult {
-    pub stdout: String,
-    pub stderr: String,
-    pub success: bool,
-}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SystemInfo {
@@ -23,32 +16,7 @@ impl SystemService {
     pub fn new() -> Self {
         SystemService
     }
-    
-    pub fn get_home_dir(&self) -> Result<String, String> {
-        std::env::var("HOME")
-            .map_err(|e| format!("Failed to get home directory: {}", e))
-    }
-    
-    pub fn execute_command(&self, cmd: &str, args: Vec<String>) -> Result<CommandResult, String> {
-        // 安全白名单
-        let allowed_commands = vec!["killall", "ps", "ls", "cat", "mkdir", "rm", "pgrep", "open"];
-        
-        if !allowed_commands.contains(&cmd) {
-            return Err(format!("Command '{}' is not allowed", cmd));
-        }
-        
-        let output = Command::new(cmd)
-            .args(&args)
-            .output()
-            .map_err(|e| format!("Failed to execute command: {}", e))?;
-        
-        Ok(CommandResult {
-            stdout: String::from_utf8_lossy(&output.stdout).to_string(),
-            stderr: String::from_utf8_lossy(&output.stderr).to_string(),
-            success: output.status.success(),
-        })
-    }
-    
+
     pub fn read_file(&self, path: &str) -> Result<String, String> {
         fs::read_to_string(path)
             .map_err(|e| format!("Failed to read file: {}", e))
