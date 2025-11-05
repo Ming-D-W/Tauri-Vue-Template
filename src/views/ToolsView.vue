@@ -181,7 +181,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { api } from '@api'
-import Toast from './common/Toast.vue'
 
 // 文件工具状态
 const selectedFiles = ref([])

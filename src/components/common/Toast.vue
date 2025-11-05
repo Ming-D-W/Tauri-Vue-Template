@@ -17,6 +17,14 @@
 <script setup>
 import { useToast } from '@composables/useToast'
 
+// 禁用属性继承（因为使用了 Teleport 根节点）
+defineOptions({
+  inheritAttrs: false,
+})
+
+// 声明组件不发出任何事件（Toast 通过 composable 管理状态）
+defineEmits([])
+
 // 使用 Toast composable（全局单例）
 const { show, type, message, hideToast } = useToast()
 

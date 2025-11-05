@@ -31,7 +31,11 @@ export default defineConfig(({ mode }) => ({
     }),
     Components({
       dts: 'components.d.js',
-      dirs: ['src/components', 'src/components/common'],
+      dirs: [
+        'src/components/common',
+        'src/components/layout',
+        'src/components/features',
+      ],
       extensions: ['vue'],
       deep: true,
       directoryAsNamespace: false,
@@ -60,12 +64,18 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '@views': path.resolve(__dirname, 'src/views'),
       '@components': path.resolve(__dirname, 'src/components'),
+      '@layout': path.resolve(__dirname, 'src/components/layout'),
+      '@features': path.resolve(__dirname, 'src/components/features'),
+      '@common': path.resolve(__dirname, 'src/components/common'),
       '@stores': path.resolve(__dirname, 'src/stores'),
       '@composables': path.resolve(__dirname, 'src/composables'),
       '@assets': path.resolve(__dirname, 'src/assets'),
       '@api': path.resolve(__dirname, 'src/api'),
-      '@utils': path.resolve(__dirname, 'src/utils')
+      '@utils': path.resolve(__dirname, 'src/utils'),
+      '@constants': path.resolve(__dirname, 'src/constants'),
+      '@config': path.resolve(__dirname, 'src/config'),
     }
   },
   server: {

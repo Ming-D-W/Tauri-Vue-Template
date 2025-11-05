@@ -11,120 +11,120 @@ import { logger } from '@/utils/logger'
 export const useAppStore = defineStore(
   'app',
   () => {
-  // ==================== State ====================
-  const version = ref('')
-  const dataDir = ref('')
-  const homeDir = ref('')
-  const systemInfo = ref(null)
-  const isInitialized = ref(false)
-  const isLoading = ref(false)
-  const error = ref(null)
+    // ==================== State ====================
+    const version = ref('')
+    const dataDir = ref('')
+    const homeDir = ref('')
+    const systemInfo = ref(null)
+    const isInitialized = ref(false)
+    const isLoading = ref(false)
+    const error = ref(null)
 
-  // ==================== Getters ====================
-  const appInfo = computed(() => ({
-    version: version.value,
-    dataDir: dataDir.value,
-    homeDir: homeDir.value,
-    systemInfo: systemInfo.value,
-    isInitialized: isInitialized.value,
-  }))
+    // ==================== Getters ====================
+    const appInfo = computed(() => ({
+      version: version.value,
+      dataDir: dataDir.value,
+      homeDir: homeDir.value,
+      systemInfo: systemInfo.value,
+      isInitialized: isInitialized.value,
+    }))
 
-  const hasError = computed(() => error.value !== null)
+    const hasError = computed(() => error.value !== null)
 
-  // ==================== Actions ====================
+    // ==================== Actions ====================
 
-  /**
-   * 初始化应用
-   * 获取应用版本、数据目录等基本信息
-   */
-  async function initialize() {
-    if (isInitialized.value) {
-      logger.info('App already initialized')
-      return
+    /**
+     * 初始化应用
+     * 获取应用版本、数据目录等基本信息
+     */
+    async function initialize() {
+      if (isInitialized.value) {
+        logger.info('App already initialized')
+        return
+      }
+
+      isLoading.value = true
+      error.value = null
+
+      try {
+        logger.info('Initializing app...')
+
+        // 并行获取应用信息
+        const [appVersion, appDataDir, appHomeDir, sysInfo] = await Promise.all([
+          api.app.getVersion().catch(err => {
+            logger.warn('Failed to get app version:', err)
+            return 'Unknown'
+          }),
+          api.app.getDataDir().catch(err => {
+            logger.warn('Failed to get data dir:', err)
+            return ''
+          }),
+          api.system.getHomeDir().catch(err => {
+            logger.warn('Failed to get home dir:', err)
+            return ''
+          }),
+          api.system.getSystemInfo().catch(err => {
+            logger.warn('Failed to get system info:', err)
+            return null
+          }),
+        ])
+
+        version.value = appVersion
+        dataDir.value = appDataDir
+        homeDir.value = appHomeDir
+        systemInfo.value = sysInfo
+        isInitialized.value = true
+
+        logger.info('App initialized successfully', {
+          version: version.value,
+          dataDir: dataDir.value,
+          homeDir: homeDir.value,
+          systemInfo: systemInfo.value,
+        })
+      } catch (err) {
+        error.value = err
+        logger.error('Failed to initialize app:', err)
+        throw err
+      } finally {
+        isLoading.value = false
+      }
     }
 
-    isLoading.value = true
-    error.value = null
-
-    try {
-      logger.info('Initializing app...')
-
-      // 并行获取应用信息
-      const [appVersion, appDataDir, appHomeDir, sysInfo] = await Promise.all([
-        api.app.getVersion().catch(err => {
-          logger.warn('Failed to get app version:', err)
-          return 'Unknown'
-        }),
-        api.app.getDataDir().catch(err => {
-          logger.warn('Failed to get data dir:', err)
-          return ''
-        }),
-        api.system.getHomeDir().catch(err => {
-          logger.warn('Failed to get home dir:', err)
-          return ''
-        }),
-        api.system.getSystemInfo().catch(err => {
-          logger.warn('Failed to get system info:', err)
-          return null
-        }),
-      ])
-
-      version.value = appVersion
-      dataDir.value = appDataDir
-      homeDir.value = appHomeDir
-      systemInfo.value = sysInfo
-      isInitialized.value = true
-
-      logger.info('App initialized successfully', {
-        version: version.value,
-        dataDir: dataDir.value,
-        homeDir: homeDir.value,
-        systemInfo: systemInfo.value,
-      })
-    } catch (err) {
-      error.value = err
-      logger.error('Failed to initialize app:', err)
-      throw err
-    } finally {
+    /**
+     * 重置应用状态
+     */
+    function reset() {
+      version.value = ''
+      dataDir.value = ''
+      homeDir.value = ''
+      systemInfo.value = null
+      isInitialized.value = false
       isLoading.value = false
+      error.value = null
+      logger.info('App state reset')
     }
-  }
 
-  /**
-   * 重置应用状态
-   */
-  function reset() {
-    version.value = ''
-    dataDir.value = ''
-    homeDir.value = ''
-    systemInfo.value = null
-    isInitialized.value = false
-    isLoading.value = false
-    error.value = null
-    logger.info('App state reset')
-  }
-
-  /**
-   * 清除错误
-   */
-  function clearError() {
-    error.value = null
-  }
-
-  /**
-   * 获取系统信息
-   */
-  async function getSystemInfo() {
-    try {
-      logger.debug('Getting system info...')
-      const info = await api.system.getSystemInfo()
-      logger.debug('System info:', info)
-      return info
-    } catch (err) {
-      logger.error('Failed to get system info:', err)
-      throw err
+    /**
+     * 清除错误
+     */
+    function clearError() {
+      error.value = null
     }
-  }
+
+    /**
+     * 获取系统信息
+     */
+    async function getSystemInfo() {
+      try {
+        logger.debug('Getting system info...')
+        const info = await api.system.getSystemInfo()
+        logger.debug('System info:', info)
+        return info
+      } catch (err) {
+        logger.error('Failed to get system info:', err)
+        throw err
+      }
+    }
 
     // ==================== Return ====================
     return {

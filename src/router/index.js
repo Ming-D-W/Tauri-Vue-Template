@@ -1,45 +1,46 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { ROUTES, ROUTE_NAMES, ROUTE_TITLES, ROUTE_ICONS } from '@/constants/routes'
 
 // 路由配置
 const routes = [
   {
     path: '/',
-    redirect: '/examples',
+    redirect: ROUTES.EXAMPLES,
   },
   {
-    path: '/console',
-    name: 'Console',
-    component: () => import('@/components/PopupTab.vue'),
+    path: ROUTES.EXAMPLES,
+    name: ROUTE_NAMES.EXAMPLES,
+    component: () => import('@/views/ExamplesView.vue'),
     meta: {
-      title: '控制台',
-      icon: 'icon-kaishiliucheng',
+      title: ROUTE_TITLES[ROUTES.EXAMPLES],
+      icon: ROUTE_ICONS[ROUTES.EXAMPLES],
     },
   },
   {
-    path: '/examples',
-    name: 'Examples',
-    component: () => import('@/components/ExamplesTab.vue'),
+    path: ROUTES.TOOLS,
+    name: ROUTE_NAMES.TOOLS,
+    component: () => import('@/views/ToolsView.vue'),
     meta: {
-      title: '组件示例',
-      icon: 'icon-fangwenlingpai',
+      title: ROUTE_TITLES[ROUTES.TOOLS],
+      icon: ROUTE_ICONS[ROUTES.TOOLS],
     },
   },
   {
-    path: '/tools',
-    name: 'Tools',
-    component: () => import('@/components/ToolsTab.vue'),
+    path: ROUTES.CONFIG,
+    name: ROUTE_NAMES.CONFIG,
+    component: () => import('@/views/ConfigView.vue'),
     meta: {
-      title: '系统工具',
-      icon: 'icon-youxiang',
+      title: ROUTE_TITLES[ROUTES.CONFIG],
+      icon: ROUTE_ICONS[ROUTES.CONFIG],
     },
   },
   {
-    path: '/settings',
-    name: 'Settings',
-    component: () => import('@/components/ConfigTab.vue'),
+    path: ROUTES.POPUP,
+    name: ROUTE_NAMES.POPUP,
+    component: () => import('@/views/PopupView.vue'),
     meta: {
-      title: '应用设置',
-      icon: 'icon-shezhi',
+      title: ROUTE_TITLES[ROUTES.POPUP],
+      icon: ROUTE_ICONS[ROUTES.POPUP],
     },
   },
 ]
@@ -59,4 +60,3 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
-

@@ -11,14 +11,17 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AppLayout: typeof import('./src/components/layout/AppLayout.vue')['default']
     ConfigTab: typeof import('./src/components/ConfigTab.vue')['default']
     ExamplesTab: typeof import('./src/components/ExamplesTab.vue')['default']
-    MainFooter: typeof import('./src/components/MainFooter.vue')['default']
+    MainFooter: typeof import('./src/components/layout/MainFooter.vue')['default']
     Modal: typeof import('./src/components/common/Modal.vue')['default']
     PopupTab: typeof import('./src/components/PopupTab.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Sidebar: typeof import('./src/components/layout/Sidebar.vue')['default']
     ThemeToggle: typeof import('./src/components/common/ThemeToggle.vue')['default']
+    Titlebar: typeof import('./src/components/layout/Titlebar.vue')['default']
     Toast: typeof import('./src/components/common/Toast.vue')['default']
     ToolsTab: typeof import('./src/components/ToolsTab.vue')['default']
   }
