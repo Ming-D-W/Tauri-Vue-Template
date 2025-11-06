@@ -86,53 +86,72 @@ jobs:
 
           echo "Generating changelog from $PREVIOUS_TAG to ${{ github.ref_name }}"
 
-          # 获取 commits 并分类
-          COMMITS=$(git log $PREVIOUS_TAG..${{ github.ref_name }} --pretty=format:"%s|||%h|||%an" --no-merges)
+          # 创建临时文件存储 changelog
+          CHANGELOG_FILE=$(mktemp)
 
-          # 初始化分类
-          FEATURES=""
-          FIXES=""
-          CHORES=""
-          OTHERS=""
+          echo "## 🎉 Release ${{ github.ref_name }}" > "$CHANGELOG_FILE"
+          echo "" >> "$CHANGELOG_FILE"
+
+          # 获取 commits 并分类
+          FEATURES_FILE=$(mktemp)
+          FIXES_FILE=$(mktemp)
+          CHORES_FILE=$(mktemp)
+          OTHERS_FILE=$(mktemp)
 
           # 分类 commits
-          while IFS='|||' read -r message hash author; do
-            if [[ $message == feat:* ]] || [[ $message == feature:* ]]; then
-              FEATURES="${FEATURES}- ${message#*: } (\`${hash}\`)\n"
-            elif [[ $message == fix:* ]]; then
-              FIXES="${FIXES}- ${message#*: } (\`${hash}\`)\n"
-            elif [[ $message == chore:* ]] || [[ $message == build:* ]] || [[ $message == ci:* ]]; then
-              CHORES="${CHORES}- ${message#*: } (\`${hash}\`)\n"
+          git log $PREVIOUS_TAG..${{ github.ref_name }} --pretty=format:"%s|||%h" --no-merges | while IFS='|||' read -r message hash; do
+            # 清理 message，移除换行符和特殊字符
+            clean_message=$(echo "$message" | tr -d '\n\r' | sed 's/"/\\"/g')
+
+            if [[ $clean_message == feat:* ]] || [[ $clean_message == feature:* ]]; then
+              echo "- ${clean_message#*: } (\`${hash}\`)" >> "$FEATURES_FILE"
+            elif [[ $clean_message == fix:* ]]; then
+              echo "- ${clean_message#*: } (\`${hash}\`)" >> "$FIXES_FILE"
+            elif [[ $clean_message == chore:* ]] || [[ $clean_message == build:* ]] || [[ $clean_message == ci:* ]]; then
+              echo "- ${clean_message#*: } (\`${hash}\`)" >> "$CHORES_FILE"
             else
-              OTHERS="${OTHERS}- ${message} (\`${hash}\`)\n"
+              echo "- ${clean_message} (\`${hash}\`)" >> "$OTHERS_FILE"
             fi
-          done <<< "$COMMITS"
+          done
 
           # 构建 changelog
-          CHANGELOG="## 🎉 Release ${{ github.ref_name }}\n\n"
-
-          if [ -n "$FEATURES" ]; then
-            CHANGELOG="${CHANGELOG}### ✨ 新功能\n${FEATURES}\n"
+          if [ -s "$FEATURES_FILE" ]; then
+            echo "### ✨ 新功能" >> "$CHANGELOG_FILE"
+            cat "$FEATURES_FILE" >> "$CHANGELOG_FILE"
+            echo "" >> "$CHANGELOG_FILE"
           fi
 
-          if [ -n "$FIXES" ]; then
-            CHANGELOG="${CHANGELOG}### 🐛 Bug 修复\n${FIXES}\n"
+          if [ -s "$FIXES_FILE" ]; then
+            echo "### 🐛 Bug 修复" >> "$CHANGELOG_FILE"
+            cat "$FIXES_FILE" >> "$CHANGELOG_FILE"
+            echo "" >> "$CHANGELOG_FILE"
           fi
 
-          if [ -n "$CHORES" ]; then
-            CHANGELOG="${CHANGELOG}### 🔧 其他改进\n${CHORES}\n"
+          if [ -s "$CHORES_FILE" ]; then
+            echo "### 🔧 其他改进" >> "$CHANGELOG_FILE"
+            cat "$CHORES_FILE" >> "$CHANGELOG_FILE"
+            echo "" >> "$CHANGELOG_FILE"
           fi
 
-          if [ -n "$OTHERS" ]; then
-            CHANGELOG="${CHANGELOG}### 📝 其他变更\n${OTHERS}\n"
+          if [ -s "$OTHERS_FILE" ]; then
+            echo "### 📝 其他变更" >> "$CHANGELOG_FILE"
+            cat "$OTHERS_FILE" >> "$CHANGELOG_FILE"
+            echo "" >> "$CHANGELOG_FILE"
           fi
 
-          CHANGELOG="${CHANGELOG}\n---\n\n**完整变更**: [\`${PREVIOUS_TAG}...${GITHUB_REF_NAME}\`](https://github.com/${{ github.repository }}/compare/${PREVIOUS_TAG}...${GITHUB_REF_NAME})"
+          echo "---" >> "$CHANGELOG_FILE"
+          echo "" >> "$CHANGELOG_FILE"
+          echo "**完整变更**: [\`${PREVIOUS_TAG}...${GITHUB_REF_NAME}\`](https://github.com/${{ github.repository }}/compare/${PREVIOUS_TAG}...${GITHUB_REF_NAME})" >> "$CHANGELOG_FILE"
 
           # 输出到 GITHUB_OUTPUT（处理多行）
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          echo -e "$CHANGELOG" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          {
+            echo "changelog<<EOF"
+            cat "$CHANGELOG_FILE"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+          # 清理临时文件
+          rm -f "$CHANGELOG_FILE" "$FEATURES_FILE" "$FIXES_FILE" "$CHORES_FILE" "$OTHERS_FILE"
         shell: bash
 
       - name: Set release info
