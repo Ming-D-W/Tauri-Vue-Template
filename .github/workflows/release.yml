@@ -187,8 +187,6 @@ jobs:
           releaseDraft: ${{ steps.release-info.outputs.is_draft }}
           prerelease: ${{ steps.release-info.outputs.is_prerelease }}
           args: ${{ matrix.args }}
-          # 配置只生成特定格式的安装包
-          bundleArgs: ${{ matrix.platform == 'macos-latest' && '--bundles dmg' || '--bundles nsis' }}
 
       - name: Clean up old draft releases
         if: github.ref == 'refs/heads/main' && matrix.platform == 'windows-latest'
