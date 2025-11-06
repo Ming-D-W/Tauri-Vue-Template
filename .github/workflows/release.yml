@@ -2,20 +2,15 @@ name: "publish"
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - "src/**"
-      - "src-tauri/**"
-      - "package.json"
-      - "package-lock.json"
-      - "src-tauri/Cargo.toml"
-      - "src-tauri/Cargo.lock"
-      - "vite.config.js"
-      - ".github/workflows/release.yml"
     tags:
       - v*.*.*
   workflow_dispatch:
+    inputs:
+      create_release:
+        description: '是否创建 Release'
+        required: true
+        type: boolean
+        default: true
 
 concurrency:
   group: release-${{ github.ref }}
@@ -85,11 +80,29 @@ jobs:
             COMMITS=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges)
           fi
 
-          # Create changelog
-          CHANGELOG="🎉 What's New in ${{ github.ref_name }}
+          # 过滤掉 CI/CD 相关的 commits
+          FILTERED_COMMITS=$(echo "$COMMITS" | grep -v -E "^- (fix|feat|chore|refactor):.*(CI|workflow|release|changelog|draft|GitHub Actions|Base64|heredoc)" || echo "$COMMITS")
 
-          📝 Changes
-          $COMMITS"
+          # 创建汉化的 changelog
+          CHANGELOG="## 🎉 Tauri Vue Template ${{ github.ref_name }}
+
+          ### 📝 更新内容
+          $FILTERED_COMMITS
+
+          ### 📦 安装说明
+          请根据您的操作系统下载对应的安装包：
+          - **Windows**: \`.exe\` 安装程序（NSIS）
+          - **macOS (Apple Silicon)**: \`.dmg\` 适用于 M1/M2/M3 芯片的 Mac
+          - **macOS (Intel)**: \`.dmg\` 适用于 Intel 芯片的 Mac
+
+          ### 🔗 相关链接
+          - [项目仓库](https://github.com/${{ github.repository }})
+          - [使用文档](https://github.com/${{ github.repository }}#readme)"
+
+          if [ -n "$PREVIOUS_TAG" ]; then
+            CHANGELOG="$CHANGELOG
+          - [完整变更](https://github.com/${{ github.repository }}/compare/${PREVIOUS_TAG}...${{ github.ref_name }})"
+          fi
 
           # Output to GITHUB_OUTPUT using heredoc
           {
@@ -102,45 +115,19 @@ jobs:
       - name: Set release info
         id: release-info
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
-            # Tag 推送：创建 Draft Release（需要手动发布）
-            echo "tag_name=v__VERSION__" >> $GITHUB_OUTPUT
-            echo "release_name=Tauri Vue Template v__VERSION__" >> $GITHUB_OUTPUT
+          # Tag 推送：创建 Draft Release（需要手动发布）
+          echo "tag_name=v__VERSION__" >> $GITHUB_OUTPUT
+          echo "release_name=Tauri Vue Template v__VERSION__" >> $GITHUB_OUTPUT
 
-            # 直接使用 changelog 输出
-            {
-              echo "release_body<<EOF"
-              echo "${{ steps.changelog.outputs.changelog }}"
-              echo "EOF"
-            } >> $GITHUB_OUTPUT
+          # 直接使用 changelog 输出
+          {
+            echo "release_body<<EOF"
+            echo "${{ steps.changelog.outputs.changelog }}"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
 
-            echo "is_draft=true" >> $GITHUB_OUTPUT
-            echo "is_prerelease=false" >> $GITHUB_OUTPUT
-          else
-            # Main 分支推送：创建 Draft Release
-            SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-
-            # 只获取 commit message 的第一行
-            COMMIT_TITLE=$(git log -1 --pretty=format:"%s" ${{ github.sha }})
-
-            echo "tag_name=v${{ steps.package-version.outputs.version }}-build-$SHORT_SHA" >> $GITHUB_OUTPUT
-            echo "release_name=Tauri Vue Template v${{ steps.package-version.outputs.version }}-build-$SHORT_SHA" >> $GITHUB_OUTPUT
-
-            # 使用 heredoc 格式避免特殊字符问题
-            {
-              echo "release_body<<EOF"
-              echo "🤖 **自动构建**"
-              echo ""
-              echo "**Commit**: [\`$SHORT_SHA\`](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
-              echo "**信息**: $COMMIT_TITLE"
-              echo ""
-              echo "此版本为自动构建，基于最新的 main 分支代码。"
-              echo "EOF"
-            } >> $GITHUB_OUTPUT
-
-            echo "is_draft=true" >> $GITHUB_OUTPUT
-            echo "is_prerelease=false" >> $GITHUB_OUTPUT
-          fi
+          echo "is_draft=true" >> $GITHUB_OUTPUT
+          echo "is_prerelease=false" >> $GITHUB_OUTPUT
         shell: bash
 
       - uses: tauri-apps/tauri-action@action-v0.5.20
