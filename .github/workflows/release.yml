@@ -73,79 +73,30 @@ jobs:
       - name: Generate changelog for tag release
         id: changelog
         if: startsWith(github.ref, 'refs/tags/')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # 获取上一个 tag
-          PREVIOUS_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sed -n '2p')
+          # Get the previous tag
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
 
           if [ -z "$PREVIOUS_TAG" ]; then
             echo "No previous tag found, using all commits"
-            PREVIOUS_TAG=$(git rev-list --max-parents=0 HEAD)
+            COMMITS=$(git log --pretty=format:"- %s (%h)" --no-merges)
+          else
+            echo "Generating changelog from $PREVIOUS_TAG to ${{ github.ref_name }}"
+            COMMITS=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges)
           fi
 
-          echo "Generating changelog from $PREVIOUS_TAG to ${{ github.ref_name }}"
+          # Create changelog
+          CHANGELOG="🎉 What's New in ${{ github.ref_name }}
 
-          # 创建临时文件存储 changelog
-          CHANGELOG_FILE=$(mktemp)
+          📝 Changes
+          $COMMITS"
 
-          echo "## 🎉 Release ${{ github.ref_name }}" > "$CHANGELOG_FILE"
-          echo "" >> "$CHANGELOG_FILE"
-
-          # 获取 commits 并分类
-          FEATURES_FILE=$(mktemp)
-          FIXES_FILE=$(mktemp)
-          CHORES_FILE=$(mktemp)
-          OTHERS_FILE=$(mktemp)
-
-          # 分类 commits（只使用第一行）
-          git log $PREVIOUS_TAG..${{ github.ref_name }} --pretty=format:"%s|||%h" --no-merges | while IFS='|||' read -r message hash; do
-            if [[ $message == feat:* ]] || [[ $message == feature:* ]]; then
-              echo "- ${message#*: } (\`${hash}\`)" >> "$FEATURES_FILE"
-            elif [[ $message == fix:* ]]; then
-              echo "- ${message#*: } (\`${hash}\`)" >> "$FIXES_FILE"
-            elif [[ $message == chore:* ]] || [[ $message == build:* ]] || [[ $message == ci:* ]]; then
-              echo "- ${message#*: } (\`${hash}\`)" >> "$CHORES_FILE"
-            else
-              echo "- ${message} (\`${hash}\`)" >> "$OTHERS_FILE"
-            fi
-          done
-
-          # 构建 changelog
-          if [ -s "$FEATURES_FILE" ]; then
-            echo "### ✨ 新功能" >> "$CHANGELOG_FILE"
-            cat "$FEATURES_FILE" >> "$CHANGELOG_FILE"
-            echo "" >> "$CHANGELOG_FILE"
-          fi
-
-          if [ -s "$FIXES_FILE" ]; then
-            echo "### 🐛 Bug 修复" >> "$CHANGELOG_FILE"
-            cat "$FIXES_FILE" >> "$CHANGELOG_FILE"
-            echo "" >> "$CHANGELOG_FILE"
-          fi
-
-          if [ -s "$CHORES_FILE" ]; then
-            echo "### 🔧 其他改进" >> "$CHANGELOG_FILE"
-            cat "$CHORES_FILE" >> "$CHANGELOG_FILE"
-            echo "" >> "$CHANGELOG_FILE"
-          fi
-
-          if [ -s "$OTHERS_FILE" ]; then
-            echo "### 📝 其他变更" >> "$CHANGELOG_FILE"
-            cat "$OTHERS_FILE" >> "$CHANGELOG_FILE"
-            echo "" >> "$CHANGELOG_FILE"
-          fi
-
-          echo "---" >> "$CHANGELOG_FILE"
-          echo "" >> "$CHANGELOG_FILE"
-          echo "**完整变更**: [\`${PREVIOUS_TAG}...${GITHUB_REF_NAME}\`](https://github.com/${{ github.repository }}/compare/${PREVIOUS_TAG}...${GITHUB_REF_NAME})" >> "$CHANGELOG_FILE"
-
-          # 使用 Base64 编码避免特殊字符问题
-          CHANGELOG_BASE64=$(cat "$CHANGELOG_FILE" | base64 -w 0 2>/dev/null || cat "$CHANGELOG_FILE" | base64)
-          echo "changelog_base64=$CHANGELOG_BASE64" >> $GITHUB_OUTPUT
-
-          # 清理临时文件
-          rm -f "$CHANGELOG_FILE" "$FEATURES_FILE" "$FIXES_FILE" "$CHORES_FILE" "$OTHERS_FILE"
+          # Output to GITHUB_OUTPUT using heredoc
+          {
+            echo "changelog<<EOF"
+            echo "$CHANGELOG"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Set release info
@@ -156,13 +107,12 @@ jobs:
             echo "tag_name=v__VERSION__" >> $GITHUB_OUTPUT
             echo "release_name=Tauri Vue Template v__VERSION__" >> $GITHUB_OUTPUT
 
-            # 解码 Base64 编码的 changelog
-            CHANGELOG=$(echo "${{ steps.changelog.outputs.changelog_base64 }}" | base64 -d 2>/dev/null || echo "${{ steps.changelog.outputs.changelog_base64 }}" | base64 -D)
-
-            # 输出 release body
-            echo "release_body<<EOF" >> $GITHUB_OUTPUT
-            echo "$CHANGELOG" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
+            # 直接使用 changelog 输出
+            {
+              echo "release_body<<EOF"
+              echo "${{ steps.changelog.outputs.changelog }}"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
 
             echo "is_draft=false" >> $GITHUB_OUTPUT
             echo "is_prerelease=false" >> $GITHUB_OUTPUT
