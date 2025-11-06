@@ -4,8 +4,13 @@ import { ROUTES, ROUTE_NAMES, ROUTE_TITLES, ROUTE_ICONS } from '@/constants/rout
 // 路由配置
 const routes = [
   {
-    path: '/',
-    redirect: ROUTES.EXAMPLES,
+    path: ROUTES.HOME,
+    name: ROUTE_NAMES.HOME,
+    component: () => import('@/views/HomeView.vue'),
+    meta: {
+      title: ROUTE_TITLES[ROUTES.HOME],
+      icon: ROUTE_ICONS[ROUTES.HOME],
+    },
   },
   {
     path: ROUTES.EXAMPLES,
@@ -32,15 +37,6 @@ const routes = [
     meta: {
       title: ROUTE_TITLES[ROUTES.CONFIG],
       icon: ROUTE_ICONS[ROUTES.CONFIG],
-    },
-  },
-  {
-    path: ROUTES.POPUP,
-    name: ROUTE_NAMES.POPUP,
-    component: () => import('@/views/PopupView.vue'),
-    meta: {
-      title: ROUTE_TITLES[ROUTES.POPUP],
-      icon: ROUTE_ICONS[ROUTES.POPUP],
     },
   },
 ]

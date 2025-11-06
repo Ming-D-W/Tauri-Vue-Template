@@ -24,10 +24,10 @@ const router = useRouter()
 const route = useRoute()
 
 const tabs = [
+  { path: ROUTES.HOME, title: ROUTE_TITLES[ROUTES.HOME], icon: ROUTE_ICONS[ROUTES.HOME] },
   { path: ROUTES.EXAMPLES, title: ROUTE_TITLES[ROUTES.EXAMPLES], icon: ROUTE_ICONS[ROUTES.EXAMPLES] },
   { path: ROUTES.TOOLS, title: ROUTE_TITLES[ROUTES.TOOLS], icon: ROUTE_ICONS[ROUTES.TOOLS] },
   { path: ROUTES.CONFIG, title: ROUTE_TITLES[ROUTES.CONFIG], icon: ROUTE_ICONS[ROUTES.CONFIG] },
-  { path: ROUTES.POPUP, title: ROUTE_TITLES[ROUTES.POPUP], icon: ROUTE_ICONS[ROUTES.POPUP] },
 ]
 
 // 判断路由是否激活
