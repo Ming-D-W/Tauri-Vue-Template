@@ -1,6 +1,6 @@
 [package]
 name = "tauri-vue-template"
-version = "1.0.0"
+version = "1.0.1"
 description = "A modern desktop application template built with Tauri 2.0, Vue 3, and Rust"
 authors = ["Your Name <your.email@example.com>"]
 license = "MIT"
