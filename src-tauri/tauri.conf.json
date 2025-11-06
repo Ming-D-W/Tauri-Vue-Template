@@ -16,7 +16,7 @@
         "title": "",
         "width": 800,
         "height": 600,
-        "resizable": false,
+        "resizable": true,
         "maximizable": false,
         "fullscreen": false,
         "decorations": true,
@@ -27,10 +27,11 @@
     "security": {
       "csp": {
         "default-src": "'self' customprotocol: asset:",
-        "connect-src": "ipc: http://ipc.localhost",
+        "connect-src": "ipc: http://ipc.localhost http://localhost:8098 ws://localhost:8098",
         "font-src": "'self'",
         "img-src": "'self' asset: http://asset.localhost blob: data:",
-        "style-src": "'unsafe-inline' 'self'"
+        "style-src": "'unsafe-inline' 'self'",
+        "script-src": "'self' 'unsafe-inline' http://localhost:8098"
       }
     },
     "withGlobalTauri": true

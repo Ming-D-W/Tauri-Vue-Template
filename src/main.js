@@ -8,6 +8,17 @@ import { logger } from './utils/logger'
 import { handleError } from './utils/errorHandler'
 // useAppStore, useSettingsStore 已通过 unplugin-auto-import 自动导入
 
+// 开发环境加载独立 Vue DevTools 连接脚本
+if (import.meta.env.MODE === 'development') {
+  const script = document.createElement('script')
+  script.src = 'http://localhost:8098'
+  script.async = true
+  script.onerror = () => {
+    logger.warn('独立 Vue DevTools 连接失败,请确保已运行 vue-devtools 命令')
+  }
+  document.head.appendChild(script)
+}
+
 // 创建 Vue 应用
 const app = createApp(App)
 
