@@ -2,6 +2,17 @@ name: "publish"
 
 on:
   push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "src-tauri/**"
+      - "package.json"
+      - "package-lock.json"
+      - "src-tauri/Cargo.toml"
+      - "src-tauri/Cargo.lock"
+      - "vite.config.js"
+      - ".github/workflows/release.yml"
     tags:
       - v*.*.*
   workflow_dispatch:
@@ -53,6 +64,34 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
+      - name: Get version from package.json
+        id: package-version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Set release info
+        id: release-info
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            # Tag 推送：创建正式 Release
+            echo "tag_name=v__VERSION__" >> $GITHUB_OUTPUT
+            echo "release_name=Tauri Vue Template v__VERSION__" >> $GITHUB_OUTPUT
+            echo "release_body=查看 [CHANGES.md](https://github.com/${{ github.repository }}/blob/main/CHANGES.md) 了解完整的更新日志。" >> $GITHUB_OUTPUT
+            echo "is_draft=false" >> $GITHUB_OUTPUT
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          else
+            # Main 分支推送：创建 Draft Release
+            SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+            echo "tag_name=v${{ steps.package-version.outputs.version }}-build-$SHORT_SHA" >> $GITHUB_OUTPUT
+            echo "release_name=Tauri Vue Template v${{ steps.package-version.outputs.version }}-build-$SHORT_SHA" >> $GITHUB_OUTPUT
+            echo "release_body=🤖 自动构建 - Commit: ${{ github.sha }}%0A%0A**Commit 信息**: ${{ github.event.head_commit.message }}%0A%0A此版本为自动构建，基于最新的 main 分支代码。" >> $GITHUB_OUTPUT
+            echo "is_draft=true" >> $GITHUB_OUTPUT
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
       - uses: tauri-apps/tauri-action@action-v0.5.20
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -68,10 +107,43 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
-          tagName: v__VERSION__ # the action automatically replaces __VERSION__ with the app version.
-          releaseName: "Warp Pilot v__VERSION__"
-          releaseBody: "查看 [CHANGES.md](https://github.com/yourusername/warp-pilot/blob/main/CHANGES.md) 了解完整的更新日志。"
-          releaseDraft: true
-          prerelease: false
+          tagName: ${{ steps.release-info.outputs.tag_name }}
+          releaseName: ${{ steps.release-info.outputs.release_name }}
+          releaseBody: ${{ steps.release-info.outputs.release_body }}
+          releaseDraft: ${{ steps.release-info.outputs.is_draft }}
+          prerelease: ${{ steps.release-info.outputs.is_prerelease }}
           args: ${{ matrix.args }}
+
+      - name: Clean up old draft releases
+        if: github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-24.04'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Cleaning up old draft releases, keeping the 5 most recent..."
+
+          # 获取所有 draft releases，按创建时间倒序排列
+          DRAFT_RELEASES=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/releases" | \
+            jq -r '.[] | select(.draft == true) | .id' | head -n 100)
+
+          # 转换为数组
+          RELEASES_ARRAY=($DRAFT_RELEASES)
+          TOTAL=${#RELEASES_ARRAY[@]}
+
+          echo "Found $TOTAL draft releases"
+
+          # 如果超过 5 个，删除旧的
+          if [ $TOTAL -gt 5 ]; then
+            echo "Deleting $((TOTAL - 5)) old draft releases..."
+            for ((i=5; i<TOTAL; i++)); do
+              RELEASE_ID=${RELEASES_ARRAY[$i]}
+              echo "Deleting draft release ID: $RELEASE_ID"
+              curl -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
+                "https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID"
+            done
+            echo "Cleanup completed!"
+          else
+            echo "Only $TOTAL draft releases found, no cleanup needed."
+          fi
+        shell: bash
 

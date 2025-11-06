@@ -1,6 +1,6 @@
 # 代码签名配置指南
 
-本文档说明如何为 Warp Pilot 配置代码签名，以便在 GitHub Actions 中自动签名发布的应用程序。
+本文档说明如何为 Tauri Vue Template 配置代码签名，以便在 GitHub Actions 中自动签名发布的应用程序。
 
 ## 目录
 
