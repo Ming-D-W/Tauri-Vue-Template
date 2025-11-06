@@ -98,19 +98,16 @@ jobs:
           CHORES_FILE=$(mktemp)
           OTHERS_FILE=$(mktemp)
 
-          # 分类 commits
+          # 分类 commits（只使用第一行）
           git log $PREVIOUS_TAG..${{ github.ref_name }} --pretty=format:"%s|||%h" --no-merges | while IFS='|||' read -r message hash; do
-            # 清理 message，移除换行符和特殊字符
-            clean_message=$(echo "$message" | tr -d '\n\r' | sed 's/"/\\"/g')
-
-            if [[ $clean_message == feat:* ]] || [[ $clean_message == feature:* ]]; then
-              echo "- ${clean_message#*: } (\`${hash}\`)" >> "$FEATURES_FILE"
-            elif [[ $clean_message == fix:* ]]; then
-              echo "- ${clean_message#*: } (\`${hash}\`)" >> "$FIXES_FILE"
-            elif [[ $clean_message == chore:* ]] || [[ $clean_message == build:* ]] || [[ $clean_message == ci:* ]]; then
-              echo "- ${clean_message#*: } (\`${hash}\`)" >> "$CHORES_FILE"
+            if [[ $message == feat:* ]] || [[ $message == feature:* ]]; then
+              echo "- ${message#*: } (\`${hash}\`)" >> "$FEATURES_FILE"
+            elif [[ $message == fix:* ]]; then
+              echo "- ${message#*: } (\`${hash}\`)" >> "$FIXES_FILE"
+            elif [[ $message == chore:* ]] || [[ $message == build:* ]] || [[ $message == ci:* ]]; then
+              echo "- ${message#*: } (\`${hash}\`)" >> "$CHORES_FILE"
             else
-              echo "- ${clean_message} (\`${hash}\`)" >> "$OTHERS_FILE"
+              echo "- ${message} (\`${hash}\`)" >> "$OTHERS_FILE"
             fi
           done
 
@@ -143,12 +140,9 @@ jobs:
           echo "" >> "$CHANGELOG_FILE"
           echo "**完整变更**: [\`${PREVIOUS_TAG}...${GITHUB_REF_NAME}\`](https://github.com/${{ github.repository }}/compare/${PREVIOUS_TAG}...${GITHUB_REF_NAME})" >> "$CHANGELOG_FILE"
 
-          # 输出到 GITHUB_OUTPUT（处理多行）
-          {
-            echo "changelog<<EOF"
-            cat "$CHANGELOG_FILE"
-            echo "EOF"
-          } >> $GITHUB_OUTPUT
+          # 使用 Base64 编码避免特殊字符问题
+          CHANGELOG_BASE64=$(cat "$CHANGELOG_FILE" | base64 -w 0 2>/dev/null || cat "$CHANGELOG_FILE" | base64)
+          echo "changelog_base64=$CHANGELOG_BASE64" >> $GITHUB_OUTPUT
 
           # 清理临时文件
           rm -f "$CHANGELOG_FILE" "$FEATURES_FILE" "$FIXES_FILE" "$CHORES_FILE" "$OTHERS_FILE"
@@ -161,9 +155,15 @@ jobs:
             # Tag 推送：创建正式 Release
             echo "tag_name=v__VERSION__" >> $GITHUB_OUTPUT
             echo "release_name=Tauri Vue Template v__VERSION__" >> $GITHUB_OUTPUT
+
+            # 解码 Base64 编码的 changelog
+            CHANGELOG=$(echo "${{ steps.changelog.outputs.changelog_base64 }}" | base64 -d 2>/dev/null || echo "${{ steps.changelog.outputs.changelog_base64 }}" | base64 -D)
+
+            # 输出 release body
             echo "release_body<<EOF" >> $GITHUB_OUTPUT
-            echo "${{ steps.changelog.outputs.changelog }}" >> $GITHUB_OUTPUT
+            echo "$CHANGELOG" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
+
             echo "is_draft=false" >> $GITHUB_OUTPUT
             echo "is_prerelease=false" >> $GITHUB_OUTPUT
           else
