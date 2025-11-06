@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Auto-generated files
+components.d.js
+components.d.ts
+
 # Tauri / Rust
 src-tauri/target/
 src-tauri/gen/
