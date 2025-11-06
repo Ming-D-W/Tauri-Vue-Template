@@ -19,7 +19,8 @@
 - 🦀 **Rust 后端** - 高性能、内存安全的后端
 - 📁 **文件系统访问** - 通过 Tauri 进行安全的文件操作
 - 🎨 **现代化 UI** - 简洁、响应式的界面，支持 CSS 变量
-- 🔄 **自动导入** - 自动导入 Vue API、组件和路由
+- 🖼️ **图标系统** - 支持 200,000+ 图标库 + 自定义 SVG 图标
+- 🔄 **自动导入** - 自动导入 Vue API、组件、路由和图标
 - 💾 **状态持久化** - 使用 pinia-plugin-persistedstate 自动持久化
 - 🛠️ **Vue DevTools** - 开发环境集成调试工具
 - 📦 **构建优化** - 代码分包、体积优化、LTO 优化
@@ -80,6 +81,8 @@ npm run tauri:build
 - **Vite 7** - 下一代前端构建工具
 - **unplugin-auto-import** - 自动导入 API
 - **unplugin-vue-components** - 自动导入组件
+- **unplugin-icons** - 自动导入图标
+- **@iconify/json** - 200,000+ 图标库
 - **Vue DevTools** - 开发环境调试工具
 - **CSS Variables** - 现代化样式方案
 
@@ -89,6 +92,8 @@ npm run tauri:build
 - **tauri-plugin-fs** - 文件系统操作
 - **tauri-plugin-dialog** - 原生对话框
 - **serde** - 序列化框架
+- **SystemService** - 系统服务模块（文件操作、系统信息）
+- **Commands** - Tauri 命令模块（前后端通信）
 
 ### 开发工具
 - **ESLint** - 代码检查
@@ -104,12 +109,14 @@ tauri-vue-template/
 │       ├── release.yml          # 多平台发布
 │       ├── test-build.yml       # 构建测试
 │       └── lint.yml             # 代码质量检查
-├── .vscode/                     # VS Code 配置
-│   ├── extensions.json          # 推荐扩展
-│   └── settings.json            # 编辑器设置
 ├── src-tauri/                   # Rust 后端
 │   ├── src/
-│   │   └── main.rs              # 应用程序入口
+│   │   ├── main.rs              # 应用程序入口
+│   │   ├── lib.rs               # 库入口和命令注册
+│   │   ├── system.rs            # 系统服务实现
+│   │   └── commands/            # Tauri 命令模块
+│   │       ├── mod.rs           # 命令模块导出
+│   │       └── system.rs        # 系统命令
 │   ├── Cargo.toml               # Rust 依赖
 │   └── tauri.conf.json          # Tauri 配置
 ├── src/                         # Vue 前端
@@ -190,6 +197,7 @@ const router = useRouter()
 - **Vue Router API**：useRouter、useRoute 等
 - **自定义 Store**：useAppStore、useSettingsStore
 - **组件**：src/components 目录下的所有 .vue 组件
+- **图标**：所有 Iconify 图标集 + 自定义 SVG 图标
 
 ### 路由系统
 
@@ -302,6 +310,34 @@ const exists = await api.system.fileExists(filePath)
 const sysInfo = await api.system.getSystemInfo()
 ```
 
+### 图标系统
+
+应用程序集成了强大的图标系统，支持 200,000+ 图标：
+
+#### 使用 Iconify 图标
+```vue
+<template>
+  <!-- 直接使用，无需导入 -->
+  <icon-proicons-home />
+  <icon-carbon-settings />
+  <icon-heroicons-bell-solid />
+</template>
+```
+
+#### 使用自定义 SVG 图标
+```vue
+<template>
+  <!-- 将 SVG 文件放入 src/assets/icons/ -->
+  <icon-custom-logo />
+  <icon-custom-tauri />
+  <icon-custom-vue />
+</template>
+```
+
+**详细文档：**
+- 📖 [图标使用指南](ICONS.md) - 完整的图标使用文档
+- 🎨 [自定义图标指南](CUSTOM_ICONS_GUIDE.md) - 如何添加自定义 SVG 图标
+
 ### 状态管理
 
 应用程序使用 Pinia 进行状态管理，包含两个主要 store：
@@ -389,6 +425,14 @@ const message = ref('Hello World')
 </template>
 ```
 
+### 添加自定义图标
+
+1. 将 SVG 文件放入 `src/assets/icons/` 目录
+2. 在组件中使用 `<icon-custom-文件名 />`
+3. 无需任何导入或配置
+
+详细步骤请参考 [自定义图标指南](CUSTOM_ICONS_GUIDE.md)
+
 ### 自定义样式
 
 - 全局样式：`src/assets/styles/global.css`
@@ -433,6 +477,8 @@ git push && git push --tags
 
 - 📖 [更新日志](CHANGES.md)
 - 🔐 [代码签名指南](CODE_SIGNING.md)
+- 🎨 [图标使用指南](ICONS.md)
+- 🖼️ [自定义图标指南](CUSTOM_ICONS_GUIDE.md)
 - 🐛 [问题追踪](https://github.com/yourusername/tauri-vue-template/issues)
 
 ---

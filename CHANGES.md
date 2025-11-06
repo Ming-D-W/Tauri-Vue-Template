@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 多平台构建和发布（macOS x64/ARM64, Windows, Linux）
   - 代码检查和格式化验证
   - 自动化构建测试
-- VS Code 配置文件（推荐扩展和编辑器设置）
 - 代码格式化配置（EditorConfig 和 Prettier）
 
 ### Changed

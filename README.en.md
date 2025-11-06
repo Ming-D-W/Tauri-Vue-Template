@@ -14,7 +14,8 @@ A modern, production-ready desktop application template built with **Tauri 2.0**
 - 🦀 **Rust Backend** - High-performance, memory-safe backend
 - 📁 **File System Access** - Secure file operations through Tauri
 - 🎨 **Modern UI** - Clean, responsive interface with CSS Variables
-- 🔄 **Auto Import** - Automatic imports for Vue APIs, components, and router
+- 🖼️ **Icon System** - 200,000+ icon library + custom SVG icons
+- 🔄 **Auto Import** - Automatic imports for Vue APIs, components, router, and icons
 - 💾 **State Persistence** - Auto-persist with pinia-plugin-persistedstate
 - 🛠️ **Vue DevTools** - Development environment debugging tools
 - 📦 **Build Optimization** - Code splitting, size optimization, LTO
@@ -75,6 +76,8 @@ The built application will be in `src-tauri/target/release/bundle/`.
 - **Vite 7** - Next generation frontend tooling
 - **unplugin-auto-import** - Automatic API imports
 - **unplugin-vue-components** - Automatic component imports
+- **unplugin-icons** - Automatic icon imports
+- **@iconify/json** - 200,000+ icon library
 - **Vue DevTools** - Development debugging tools
 - **CSS Variables** - Modern styling approach
 
@@ -84,6 +87,8 @@ The built application will be in `src-tauri/target/release/bundle/`.
 - **tauri-plugin-fs** - File system operations
 - **tauri-plugin-dialog** - Native dialogs
 - **serde** - Serialization framework
+- **SystemService** - System service module (file operations, system info)
+- **Commands** - Tauri command module (frontend-backend communication)
 
 ### Development Tools
 - **ESLint** - Code linting
@@ -99,12 +104,14 @@ tauri-vue-template/
 │       ├── release.yml          # Multi-platform release
 │       ├── test-build.yml       # Build testing
 │       └── lint.yml             # Code quality checks
-├── .vscode/                     # VS Code configuration
-│   ├── extensions.json          # Recommended extensions
-│   └── settings.json            # Editor settings
 ├── src-tauri/                   # Rust backend
 │   ├── src/
-│   │   └── main.rs              # Application entry point
+│   │   ├── main.rs              # Application entry point
+│   │   ├── lib.rs               # Library entry and command registration
+│   │   ├── system.rs            # System service implementation
+│   │   └── commands/            # Tauri command modules
+│   │       ├── mod.rs           # Command module exports
+│   │       └── system.rs        # System commands
 │   ├── Cargo.toml               # Rust dependencies
 │   └── tauri.conf.json          # Tauri configuration
 ├── src/                         # Vue frontend
@@ -155,7 +162,10 @@ const doubled = computed(() => count.value * 2)
 Configured imports include:
 - Vue APIs (ref, computed, watch, onMounted, etc.)
 - Pinia APIs (defineStore, storeToRefs, etc.)
+- Vue Router APIs (useRouter, useRoute, etc.)
 - Custom stores (useAppStore, useSettingsStore)
+- Components (all .vue components in src/components)
+- Icons (all Iconify icon sets + custom SVG icons)
 
 ### Tauri Configuration
 
@@ -215,6 +225,34 @@ const exists = await api.system.fileExists(filePath)
 // Get system information
 const sysInfo = await api.system.getSystemInfo()
 ```
+
+### Icon System
+
+The application integrates a powerful icon system with 200,000+ icons:
+
+#### Using Iconify Icons
+```vue
+<template>
+  <!-- Use directly, no imports needed -->
+  <icon-proicons-home />
+  <icon-carbon-settings />
+  <icon-heroicons-bell-solid />
+</template>
+```
+
+#### Using Custom SVG Icons
+```vue
+<template>
+  <!-- Place SVG files in src/assets/icons/ -->
+  <icon-custom-logo />
+  <icon-custom-tauri />
+  <icon-custom-vue />
+</template>
+```
+
+**Detailed Documentation:**
+- 📖 [Icon Usage Guide](ICONS.md) - Complete icon documentation
+- 🎨 [Custom Icon Guide](CUSTOM_ICONS_GUIDE.md) - How to add custom SVG icons
 
 ### State Management
 
@@ -303,6 +341,14 @@ Use it directly in other components:
 </template>
 ```
 
+### Adding Custom Icons
+
+1. Place SVG files in `src/assets/icons/` directory
+2. Use in components with `<icon-custom-filename />`
+3. No imports or configuration needed
+
+For detailed steps, see [Custom Icon Guide](CUSTOM_ICONS_GUIDE.md)
+
 ### Customizing Styles
 
 - Global styles: `src/assets/styles/global.css`
@@ -347,6 +393,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - 📖 [Changelog](CHANGES.md)
 - 🔐 [Code Signing Guide](CODE_SIGNING.md)
+- 🎨 [Icon Usage Guide](ICONS.md)
+- 🖼️ [Custom Icon Guide](CUSTOM_ICONS_GUIDE.md)
 - 🐛 [Issue Tracker](https://github.com/yourusername/tauri-vue-template/issues)
 
 ---
