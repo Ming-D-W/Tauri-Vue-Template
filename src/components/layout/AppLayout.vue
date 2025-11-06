@@ -18,14 +18,14 @@
 
         <!-- 底部组件 -->
         <MainFooter />
+
+        <!-- 全局 Toast 通知 -->
+        <Toast />
       </div>
 
       <!-- 右侧垂直标签导航 -->
       <Sidebar />
     </div>
-
-    <!-- 全局 Toast 通知 -->
-    <Toast />
   </div>
 </template>
 
@@ -64,6 +64,7 @@ import MainFooter from './MainFooter.vue'
   min-width: 0;
   background: var(--bg-secondary);
   margin: 4px;
+  position: relative; /* 作为 Toast 的定位参考 */
 }
 
 .tab-content-container {

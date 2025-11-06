@@ -1,54 +1,67 @@
 <template>
-  <Teleport to="body">
-    <Transition name="toast">
-      <div v-if="show" :class="['toast', `toast-${type}`]" role="alert" aria-live="polite">
-        <div class="toast-icon">
-          <component :is="getIconComponent()" />
-        </div>
-        <div class="toast-content">
-          <div class="toast-message">{{ message }}</div>
-        </div>
-        <button class="toast-close" aria-label="关闭通知" @click="hideToast">×</button>
+  <TransitionGroup name="toast-list" tag="div" class="toast-container">
+    <div
+      v-for="(toast, index) in toasts"
+      :key="toast.id"
+      :class="['toast', `toast-${toast.type}`]"
+      role="alert"
+      aria-live="polite"
+      @mouseenter="pauseToast(toast.id)"
+      @mouseleave="resumeToast(toast.id)"
+    >
+      <div class="toast-icon">
+        <component :is="getIconComponent(toast.type)" />
       </div>
-    </Transition>
-  </Teleport>
+      <div class="toast-content">
+        <div class="toast-message">{{ toast.message }}</div>
+      </div>
+      <button class="toast-close" aria-label="关闭通知" @click="hideToast(toast.id)">×</button>
+    </div>
+  </TransitionGroup>
 </template>
 
 <script setup>
 import { useToast } from '@composables/useToast'
-import IconMdiCheckCircle from '~icons/mdi/check-circle'
-import IconMdiCloseCircle from '~icons/mdi/close-circle'
-import IconMdiAlertCircle from '~icons/mdi/alert-circle'
-import IconMdiInformationOutline from '~icons/mdi/information-outline'
+import IconProiconsCheckmarkCircle from '~icons/proicons/checkmark-circle'
+import IconProiconsCancelCircle from '~icons/proicons/cancel-circle'
+import IconProiconsAlertCircle from '~icons/proicons/alert-circle'
+import IconProiconsInfo from '~icons/proicons/info'
 
 // 禁用属性继承（因为使用了 Teleport 根节点）
 defineOptions({
   inheritAttrs: false,
 })
 
-// 声明组件不发出任何事件（Toast 通过 composable 管理状态）
-defineEmits([])
+// 使用 Toast composable
+const { toasts, hideToast, pauseToast, resumeToast } = useToast()
 
-// 使用 Toast composable（全局单例）
-const { show, type, message, hideToast } = useToast()
-
-// 获取图标组件
-function getIconComponent() {
+// 获取图标组件（接收 type 参数）
+function getIconComponent(type) {
   const iconMap = {
-    success: IconMdiCheckCircle,
-    error: IconMdiCloseCircle,
-    warning: IconMdiAlertCircle,
-    info: IconMdiInformationOutline,
+    success: IconProiconsCheckmarkCircle,
+    error: IconProiconsCancelCircle,
+    warning: IconProiconsAlertCircle,
+    info: IconProiconsInfo,
   }
-  return iconMap[type.value] || IconMdiInformationOutline
+  return iconMap[type] || IconProiconsInfo
 }
 </script>
 
 <style scoped>
-.toast {
-  position: fixed;
+/* Toast 容器 */
+.toast-container {
+  position: absolute;
   top: 20px;
-  right: 20px;
+  right: 20px; /* 相对于 main-content 的右侧 */
+  z-index: 2000;
+  pointer-events: none; /* 容器不拦截事件 */
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* toast 之间的间距 */
+}
+
+/* 单个 Toast */
+.toast {
   min-width: 300px;
   max-width: 400px;
   background: var(--bg-primary);
@@ -58,10 +71,13 @@ function getIconComponent() {
   align-items: flex-start;
   gap: var(--spacing-sm);
   padding: var(--spacing);
-  z-index: 2000;
   border-left: 4px solid;
+  pointer-events: auto; /* toast 本身可以交互 */
+  position: relative; /* 改为相对定位 */
+  transition: all 0.3s ease; /* 位置变化动画 */
 }
 
+/* Toast 类型样式 */
 .toast-success {
   border-left-color: var(--success-color);
 }
@@ -78,6 +94,7 @@ function getIconComponent() {
   border-left-color: var(--primary-color);
 }
 
+/* 图标样式 */
 .toast-icon {
   flex-shrink: 0;
   width: 20px;
@@ -104,6 +121,7 @@ function getIconComponent() {
   color: var(--primary-color);
 }
 
+/* 内容样式 */
 .toast-content {
   flex: 1;
   min-width: 0;
@@ -117,6 +135,7 @@ function getIconComponent() {
   word-wrap: break-word;
 }
 
+/* 关闭按钮 */
 .toast-close {
   flex-shrink: 0;
   background: none;
@@ -139,34 +158,27 @@ function getIconComponent() {
   color: var(--text-primary);
 }
 
-/* 动画效果 */
-.toast-enter-active,
-.toast-leave-active {
+/* TransitionGroup 动画 */
+.toast-list-enter-active {
   transition: all 0.3s ease;
 }
 
-.toast-enter-from {
-  opacity: 0;
-  transform: translateX(100%);
+.toast-list-leave-active {
+  transition: all 0.3s ease;
 }
 
-.toast-leave-to {
+.toast-list-enter-from {
   opacity: 0;
-  transform: translateX(100%);
+  transform: translateX(100%); /* 从主内容区域右侧滑入 */
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .toast {
-    left: 20px;
-    right: 20px;
-    min-width: 0;
-    max-width: none;
-  }
+.toast-list-leave-to {
+  opacity: 0;
+  transform: translateX(100%); /* 向主内容区域右侧滑出 */
+}
 
-  .toast-enter-from,
-  .toast-leave-to {
-    transform: translateY(-100%);
-  }
+/* 移动动画（其他 toast 位置调整） */
+.toast-list-move {
+  transition: transform 0.3s ease;
 }
 </style>
