@@ -169,9 +169,25 @@ jobs:
           else
             # Main 分支推送：创建 Draft Release
             SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+
+            # 只获取 commit message 的第一行
+            COMMIT_TITLE=$(git log -1 --pretty=format:"%s" ${{ github.sha }})
+
             echo "tag_name=v${{ steps.package-version.outputs.version }}-build-$SHORT_SHA" >> $GITHUB_OUTPUT
             echo "release_name=Tauri Vue Template v${{ steps.package-version.outputs.version }}-build-$SHORT_SHA" >> $GITHUB_OUTPUT
-            echo "release_body=🤖 **自动构建**%0A%0A**Commit**: [\`$SHORT_SHA\`](https://github.com/${{ github.repository }}/commit/${{ github.sha }})%0A**信息**: ${{ github.event.head_commit.message }}%0A%0A此版本为自动构建，基于最新的 main 分支代码。" >> $GITHUB_OUTPUT
+
+            # 使用 heredoc 格式避免特殊字符问题
+            {
+              echo "release_body<<EOF"
+              echo "🤖 **自动构建**"
+              echo ""
+              echo "**Commit**: [\`$SHORT_SHA\`](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
+              echo "**信息**: $COMMIT_TITLE"
+              echo ""
+              echo "此版本为自动构建，基于最新的 main 分支代码。"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+
             echo "is_draft=true" >> $GITHUB_OUTPUT
             echo "is_prerelease=false" >> $GITHUB_OUTPUT
           fi
