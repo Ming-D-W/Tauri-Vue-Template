@@ -103,7 +103,7 @@ jobs:
         id: release-info
         run: |
           if [[ "${{ github.ref }}" == refs/tags/* ]]; then
-            # Tag 推送：创建正式 Release
+            # Tag 推送：创建 Draft Release（需要手动发布）
             echo "tag_name=v__VERSION__" >> $GITHUB_OUTPUT
             echo "release_name=Tauri Vue Template v__VERSION__" >> $GITHUB_OUTPUT
 
@@ -114,7 +114,7 @@ jobs:
               echo "EOF"
             } >> $GITHUB_OUTPUT
 
-            echo "is_draft=false" >> $GITHUB_OUTPUT
+            echo "is_draft=true" >> $GITHUB_OUTPUT
             echo "is_prerelease=false" >> $GITHUB_OUTPUT
           else
             # Main 分支推送：创建 Draft Release
@@ -153,37 +153,3 @@ jobs:
           releaseDraft: ${{ steps.release-info.outputs.is_draft }}
           prerelease: ${{ steps.release-info.outputs.is_prerelease }}
           args: ${{ matrix.args }}
-
-      - name: Clean up old draft releases
-        if: github.ref == 'refs/heads/main' && matrix.platform == 'windows-latest'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Cleaning up old draft releases, keeping the 5 most recent..."
-
-          # 获取所有 draft releases，按创建时间倒序排列
-          DRAFT_RELEASES=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-            "https://api.github.com/repos/${{ github.repository }}/releases" | \
-            jq -r '.[] | select(.draft == true) | .id' | head -n 100)
-
-          # 转换为数组
-          RELEASES_ARRAY=($DRAFT_RELEASES)
-          TOTAL=${#RELEASES_ARRAY[@]}
-
-          echo "Found $TOTAL draft releases"
-
-          # 如果超过 5 个，删除旧的
-          if [ $TOTAL -gt 5 ]; then
-            echo "Deleting $((TOTAL - 5)) old draft releases..."
-            for ((i=5; i<TOTAL; i++)); do
-              RELEASE_ID=${RELEASES_ARRAY[$i]}
-              echo "Deleting draft release ID: $RELEASE_ID"
-              curl -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
-                "https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID"
-            done
-            echo "Cleanup completed!"
-          else
-            echo "Only $TOTAL draft releases found, no cleanup needed."
-          fi
-        shell: bash
-
