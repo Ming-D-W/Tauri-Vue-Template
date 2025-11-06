@@ -4,6 +4,12 @@
 
 一个现代化、生产就绪的桌面应用程序模板，基于 **Tauri 2.0**、**Vue 3**、**Pinia** 和 **Rust** 构建。本项目为构建具有原生性能和现代 Web 技术的跨平台桌面应用程序提供了坚实的基础。
 
+## 📸 应用预览
+
+<div align="center">
+  <img src="./public/app-screenshot.webp" alt="应用截图" width="900">
+</div>
+
 ## ✨ 特性
 
 - 🚀 **Tauri 2.0** - 构建更小、更快、更安全的桌面应用程序
