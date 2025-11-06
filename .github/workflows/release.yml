@@ -17,57 +17,58 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  publish-tauri:
-    permissions:
-      contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: "macos-latest"
-            args: "--target aarch64-apple-darwin"
-          # Uncomment for Intel builds
-          - platform: 'macos-latest'
-            args: '--target x86_64-apple-darwin'
-          - platform: "windows-latest"
-            args: ""
-
-    runs-on: ${{ matrix.platform }}
+  generate-changelog:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    outputs:
+      changelog: ${{ steps.changelog.outputs.changelog }}
+      version: ${{ steps.version.outputs.version }}
+      tag_name: ${{ steps.tag.outputs.tag_name }}
     steps:
       - uses: actions/checkout@v5.0.0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6.0.0
         with:
-          node-version: 20
-          cache: "npm"
+          fetch-depth: 0
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Rust stable
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
-
-      - name: Rust cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: './src-tauri -> target'
-          cache-on-failure: true
-          key: ${{ matrix.platform }}-${{ matrix.args }}
-
-      - name: Get version from package.json
-        id: package-version
+      - name: Get tag name
+        id: tag
         run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-        shell: bash
+          TAG_NAME="${{ github.ref_name }}"
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "Tag: $TAG_NAME"
 
-      - name: Generate changelog for tag release
+      - name: Get version
+        id: version
+        run: |
+          VERSION="${{ github.ref_name }}"
+          VERSION="${VERSION#v}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Validate version consistency
+        run: |
+          TAG_VERSION="${{ steps.version.outputs.version }}"
+
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          CARGO_VERSION=$(grep '^version = ' src-tauri/Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
+          TAURI_VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
+
+          echo "📋 版本检查："
+          echo "  Tag version: $TAG_VERSION"
+          echo "  package.json: $PACKAGE_VERSION"
+          echo "  Cargo.toml: $CARGO_VERSION"
+          echo "  tauri.conf.json: $TAURI_VERSION"
+
+          if [ "$TAG_VERSION" != "$PACKAGE_VERSION" ] || \
+             [ "$TAG_VERSION" != "$CARGO_VERSION" ] || \
+             [ "$TAG_VERSION" != "$TAURI_VERSION" ]; then
+            echo "❌ 版本不一致！"
+            exit 1
+          fi
+
+          echo "✅ 所有版本一致: $TAG_VERSION"
+
+      - name: Generate changelog
         id: changelog
-        if: startsWith(github.ref, 'refs/tags/')
         run: |
           # Get the previous tag
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
@@ -112,17 +113,58 @@ jobs:
           } >> $GITHUB_OUTPUT
         shell: bash
 
+  publish-tauri:
+    needs: [generate-changelog]
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: "macos-latest"
+            args: "--target aarch64-apple-darwin"
+          # Uncomment for Intel builds
+          - platform: 'macos-latest'
+            args: '--target x86_64-apple-darwin'
+          - platform: "windows-latest"
+            args: ""
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v5.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6.0.0
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+          cache-on-failure: true
+          key: ${{ matrix.platform }}-${{ matrix.args }}
+
       - name: Set release info
         id: release-info
         run: |
-          # Tag 推送：创建 Draft Release（需要手动发布）
-          echo "tag_name=v__VERSION__" >> $GITHUB_OUTPUT
-          echo "release_name=Tauri Vue Template v__VERSION__" >> $GITHUB_OUTPUT
+          # 使用 generate-changelog job 的输出
+          echo "tag_name=${{ needs.generate-changelog.outputs.tag_name }}" >> $GITHUB_OUTPUT
+          echo "release_name=Tauri Vue Template ${{ needs.generate-changelog.outputs.tag_name }}" >> $GITHUB_OUTPUT
 
-          # 直接使用 changelog 输出
           {
             echo "release_body<<EOF"
-            echo "${{ steps.changelog.outputs.changelog }}"
+            echo "${{ needs.generate-changelog.outputs.changelog }}"
             echo "EOF"
           } >> $GITHUB_OUTPUT
 
