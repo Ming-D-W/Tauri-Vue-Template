@@ -34,8 +34,6 @@ jobs:
           # Uncomment for Intel builds
           - platform: 'macos-latest'
             args: '--target x86_64-apple-darwin'
-          - platform: "ubuntu-24.04"
-            args: ""
           - platform: "windows-latest"
             args: ""
 
@@ -58,17 +56,83 @@ jobs:
           # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      - name: Install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-24.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+          cache-on-failure: true
+          key: ${{ matrix.platform }}-${{ matrix.args }}
 
       - name: Get version from package.json
         id: package-version
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Generate changelog for tag release
+        id: changelog
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 获取上一个 tag
+          PREVIOUS_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sed -n '2p')
+
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "No previous tag found, using all commits"
+            PREVIOUS_TAG=$(git rev-list --max-parents=0 HEAD)
+          fi
+
+          echo "Generating changelog from $PREVIOUS_TAG to ${{ github.ref_name }}"
+
+          # 获取 commits 并分类
+          COMMITS=$(git log $PREVIOUS_TAG..${{ github.ref_name }} --pretty=format:"%s|||%h|||%an" --no-merges)
+
+          # 初始化分类
+          FEATURES=""
+          FIXES=""
+          CHORES=""
+          OTHERS=""
+
+          # 分类 commits
+          while IFS='|||' read -r message hash author; do
+            if [[ $message == feat:* ]] || [[ $message == feature:* ]]; then
+              FEATURES="${FEATURES}- ${message#*: } (\`${hash}\`)\n"
+            elif [[ $message == fix:* ]]; then
+              FIXES="${FIXES}- ${message#*: } (\`${hash}\`)\n"
+            elif [[ $message == chore:* ]] || [[ $message == build:* ]] || [[ $message == ci:* ]]; then
+              CHORES="${CHORES}- ${message#*: } (\`${hash}\`)\n"
+            else
+              OTHERS="${OTHERS}- ${message} (\`${hash}\`)\n"
+            fi
+          done <<< "$COMMITS"
+
+          # 构建 changelog
+          CHANGELOG="## 🎉 Release ${{ github.ref_name }}\n\n"
+
+          if [ -n "$FEATURES" ]; then
+            CHANGELOG="${CHANGELOG}### ✨ 新功能\n${FEATURES}\n"
+          fi
+
+          if [ -n "$FIXES" ]; then
+            CHANGELOG="${CHANGELOG}### 🐛 Bug 修复\n${FIXES}\n"
+          fi
+
+          if [ -n "$CHORES" ]; then
+            CHANGELOG="${CHANGELOG}### 🔧 其他改进\n${CHORES}\n"
+          fi
+
+          if [ -n "$OTHERS" ]; then
+            CHANGELOG="${CHANGELOG}### 📝 其他变更\n${OTHERS}\n"
+          fi
+
+          CHANGELOG="${CHANGELOG}\n---\n\n**完整变更**: [\`${PREVIOUS_TAG}...${GITHUB_REF_NAME}\`](https://github.com/${{ github.repository }}/compare/${PREVIOUS_TAG}...${GITHUB_REF_NAME})"
+
+          # 输出到 GITHUB_OUTPUT（处理多行）
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Set release info
@@ -78,7 +142,9 @@ jobs:
             # Tag 推送：创建正式 Release
             echo "tag_name=v__VERSION__" >> $GITHUB_OUTPUT
             echo "release_name=Tauri Vue Template v__VERSION__" >> $GITHUB_OUTPUT
-            echo "release_body=查看 [CHANGES.md](https://github.com/${{ github.repository }}/blob/main/CHANGES.md) 了解完整的更新日志。" >> $GITHUB_OUTPUT
+            echo "release_body<<EOF" >> $GITHUB_OUTPUT
+            echo "${{ steps.changelog.outputs.changelog }}" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
             echo "is_draft=false" >> $GITHUB_OUTPUT
             echo "is_prerelease=false" >> $GITHUB_OUTPUT
           else
@@ -86,7 +152,7 @@ jobs:
             SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
             echo "tag_name=v${{ steps.package-version.outputs.version }}-build-$SHORT_SHA" >> $GITHUB_OUTPUT
             echo "release_name=Tauri Vue Template v${{ steps.package-version.outputs.version }}-build-$SHORT_SHA" >> $GITHUB_OUTPUT
-            echo "release_body=🤖 自动构建 - Commit: ${{ github.sha }}%0A%0A**Commit 信息**: ${{ github.event.head_commit.message }}%0A%0A此版本为自动构建，基于最新的 main 分支代码。" >> $GITHUB_OUTPUT
+            echo "release_body=🤖 **自动构建**%0A%0A**Commit**: [\`$SHORT_SHA\`](https://github.com/${{ github.repository }}/commit/${{ github.sha }})%0A**信息**: ${{ github.event.head_commit.message }}%0A%0A此版本为自动构建，基于最新的 main 分支代码。" >> $GITHUB_OUTPUT
             echo "is_draft=true" >> $GITHUB_OUTPUT
             echo "is_prerelease=false" >> $GITHUB_OUTPUT
           fi
@@ -102,9 +168,11 @@ jobs:
           releaseDraft: ${{ steps.release-info.outputs.is_draft }}
           prerelease: ${{ steps.release-info.outputs.is_prerelease }}
           args: ${{ matrix.args }}
+          # 配置只生成特定格式的安装包
+          bundleArgs: ${{ matrix.platform == 'macos-latest' && '--bundles dmg' || '--bundles nsis' }}
 
       - name: Clean up old draft releases
-        if: github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-24.04'
+        if: github.ref == 'refs/heads/main' && matrix.platform == 'windows-latest'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
