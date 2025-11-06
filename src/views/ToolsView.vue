@@ -2,7 +2,7 @@
   <div class="tools-tab-container">
     <!-- 页面标题 -->
     <div class="header-section">
-      <h2><icon-mdi-tools /> 系统工具</h2>
+      <h2><icon-proicons-wrench /> 系统工具</h2>
       <p class="description">文件操作、系统命令和实用工具</p>
     </div>
 
@@ -10,7 +10,7 @@
     <div class="tools-sections">
       <!-- 文件工具 -->
       <section class="tool-section">
-        <h3><icon-mdi-folder /> 文件工具</h3>
+        <h3><icon-proicons-folder /> 文件工具</h3>
         <div class="tool-grid">
           <!-- 文件选择器 -->
           <div class="tool-card">
@@ -60,7 +60,7 @@
 
       <!-- 系统工具 -->
       <section class="tool-section">
-        <h3><icon-mdi-monitor /> 系统工具</h3>
+        <h3><icon-proicons-computer /> 系统工具</h3>
         <div class="tool-grid">
           <!-- 系统信息 -->
           <div class="tool-card">

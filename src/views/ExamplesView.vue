@@ -2,7 +2,7 @@
   <div class="examples-tab-container">
     <!-- 页面标题 -->
     <div class="header-section">
-      <h2><icon-mdi-palette /> 组件示例</h2>
+      <h2><icon-proicons-box /> 组件示例</h2>
       <p class="description">展示 Tauri + Vue 3 的各种功能和组件示例</p>
     </div>
 
@@ -15,7 +15,7 @@
 
       <!-- UI 组件示例 -->
       <section class="example-section">
-        <h3><icon-mdi-package-variant /> UI 组件示例</h3>
+        <h3><icon-proicons-color-palette /> UI 组件示例</h3>
         <div class="example-grid">
           <!-- 按钮示例 -->
           <div class="example-card">
@@ -77,7 +77,7 @@
             <h4>加载状态</h4>
             <div class="example-content">
               <button class="btn btn-primary" :disabled="isLoading" @click="simulateLoading">
-                <span v-if="isLoading"><icon-mdi-loading class="spinning" /> 加载中...</span>
+                <span v-if="isLoading"><icon-proicons-spinner class="spinning" /> 加载中...</span>
                 <span v-else>开始加载</span>
               </button>
               <div v-if="isLoading" class="loading-spinner"></div>
@@ -105,7 +105,7 @@
 
       <!-- Tauri API 示例 -->
       <section class="example-section">
-        <h3><icon-mdi-api /> Tauri API 示例</h3>
+        <h3><icon-proicons-code /> Tauri API 示例</h3>
         <div class="example-grid">
           <!-- 文件选择器 -->
           <div class="example-card">
@@ -145,7 +145,7 @@
 
       <!-- 数据持久化示例 -->
       <section class="example-section">
-        <h3><icon-mdi-database /> 数据持久化示例</h3>
+        <h3><icon-proicons-database /> 数据持久化示例</h3>
         <div class="example-grid">
           <!-- LocalStorage -->
           <div class="example-card">

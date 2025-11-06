@@ -11,7 +11,7 @@
 ```vue
 <template>
   <!-- 直接使用图标组件 -->
-  <icon-mdi-home />
+  <icon-proicons-home />
   <icon-carbon-settings />
   <icon-heroicons-bell-solid />
 </template>
@@ -22,7 +22,7 @@
 图标组件名称格式：`icon-{collection}-{icon-name}`
 
 - `icon-` - 固定前缀
-- `{collection}` - 图标集名称（如 mdi, carbon, heroicons）
+- `{collection}` - 图标集名称（如 proicons, carbon, heroicons）
 - `{icon-name}` - 图标名称（使用 kebab-case）
 
 ### 3. 自定义样式
@@ -30,10 +30,10 @@
 ```vue
 <template>
   <!-- 使用 style 属性 -->
-  <icon-mdi-home style="color: blue; font-size: 24px;" />
-  
+  <icon-proicons-home style="color: blue; font-size: 24px;" />
+
   <!-- 使用 class -->
-  <icon-mdi-home class="custom-icon" />
+  <icon-proicons-home class="custom-icon" />
 </template>
 
 <style scoped>
@@ -53,24 +53,35 @@
 </template>
 
 <script setup>
-import IconMdiHome from '~icons/mdi/home'
-import IconMdiSettings from '~icons/mdi/cog'
+import IconProiconsHome from '~icons/proicons/home'
+import IconProiconsSettings from '~icons/proicons/settings'
 
-const iconComponent = ref(IconMdiHome)
+const iconComponent = ref(IconProiconsHome)
 </script>
 ```
 
 ## 常用图标集
 
-### Material Design Icons (mdi)
-最全面的图标集，包含 7,000+ 图标
+### ProIcons (proicons) - 项目主图标集
+现代化设计，精确形状，包含 521 个图标
 
 ```vue
-<icon-mdi-home />
-<icon-mdi-account />
-<icon-mdi-settings />
-<icon-mdi-menu />
+<icon-proicons-home />
+<icon-proicons-person />
+<icon-proicons-settings />
+<icon-proicons-menu />
 ```
+
+**特点**：
+- 🎨 现代化设计风格
+- 📐 精确的形状和描边
+- 🔧 高度可定制
+- 📦 MIT 许可证
+
+**官方资源**：
+- 图标浏览：https://icones.netlify.app/collection/proicons
+- GitHub：https://github.com/ProCode-Software/proicons
+- 文档：https://procode-software.github.io/proicons/
 
 ### Carbon Icons (carbon)
 IBM 设计系统，简洁现代
@@ -93,77 +104,87 @@ Tailwind CSS 官方图标
 
 ### 导航图标
 ```vue
+<!-- 首页 -->
+<icon-proicons-home />
+
 <!-- 组件示例 -->
-<icon-mdi-palette />
+<icon-proicons-box />
 
 <!-- 系统工具 -->
-<icon-mdi-tools />
+<icon-proicons-wrench />
 
 <!-- 应用设置 -->
-<icon-mdi-cog />
-
-<!-- 弹窗示例 -->
-<icon-mdi-message-text />
+<icon-proicons-settings />
 ```
 
 ### 功能图标
 ```vue
 <!-- 主题切换 -->
-<icon-mdi-white-balance-sunny />  <!-- 亮色 -->
-<icon-mdi-moon-waning-crescent /> <!-- 暗色 -->
-<icon-mdi-theme-light-dark />     <!-- 自动 -->
+<icon-proicons-brightness />      <!-- 亮色 -->
+<icon-proicons-moon />            <!-- 暗色 -->
+<icon-proicons-dark-theme />      <!-- 暗色主题 -->
 
 <!-- Toast 通知 -->
-<icon-mdi-check-circle />         <!-- 成功 -->
-<icon-mdi-close-circle />         <!-- 错误 -->
-<icon-mdi-alert-circle />         <!-- 警告 -->
-<icon-mdi-information-outline />  <!-- 信息 -->
+<icon-proicons-checkmark-circle /> <!-- 成功 -->
+<icon-proicons-cancel-circle />    <!-- 错误 -->
+<icon-proicons-alert-circle />     <!-- 警告 -->
+<icon-proicons-info />             <!-- 信息 -->
 ```
 
 ### 操作图标
 ```vue
 <!-- 文件操作 -->
-<icon-mdi-folder />
-<icon-mdi-file />
-<icon-mdi-download />
-<icon-mdi-upload />
+<icon-proicons-folder />
+<icon-proicons-file />
+<icon-proicons-arrow-download />
+<icon-proicons-arrow-upload />
 
 <!-- 编辑操作 -->
-<icon-mdi-pencil />
-<icon-mdi-delete />
-<icon-mdi-content-save />
-<icon-mdi-refresh />
+<icon-proicons-pencil />
+<icon-proicons-delete />
+<icon-proicons-save />
+<icon-proicons-arrow-sync />
 
 <!-- 状态图标 -->
-<icon-mdi-loading class="spinning" />
-<icon-mdi-check />
-<icon-mdi-close />
+<icon-proicons-spinner class="spinning" />
+<icon-proicons-checkmark />
+<icon-proicons-cancel />
 ```
 
 ### 系统图标
 ```vue
 <!-- 系统信息 -->
-<icon-mdi-monitor />
-<icon-mdi-database />
-<icon-mdi-information />
-<icon-mdi-api />
+<icon-proicons-computer />
+<icon-proicons-database />
+<icon-proicons-info />
+<icon-proicons-code />
+
+<!-- 页面特性 -->
+<icon-proicons-bolt />           <!-- 快速轻量 -->
+<icon-proicons-color-palette />  <!-- 现代化界面 -->
+<icon-proicons-database />       <!-- 状态管理 -->
+<icon-proicons-wrench />         <!-- 开发友好 -->
 
 <!-- 其他 -->
-<icon-mdi-rocket-launch />
-<icon-mdi-lightning-bolt />
-<icon-mdi-package-variant />
+<icon-proicons-box />
+<icon-proicons-apps />
 ```
 
 ## 图标搜索
 
 ### 在线搜索工具
 
-1. **Iconify 官方搜索**
+1. **ProIcons 官方浏览器**
+   - 网址：https://icones.netlify.app/collection/proicons
+   - 浏览所有 ProIcons 图标
+   - 提供预览和代码示例
+
+2. **Iconify 官方搜索**
    - 网址：https://icon-sets.iconify.design/
    - 支持搜索所有图标集
    - 提供预览和代码示例
 
-2. **Icônes**
+3. **Icônes**
    - 网址：https://icones.js.org/
    - 更现代的搜索界面
    - 支持复制组件名称
@@ -173,7 +194,7 @@ Tailwind CSS 官方图标
 1. 使用英文关键词搜索
 2. 尝试不同的同义词
 3. 浏览相关图标集
-4. 查看图标的变体（outline, solid, filled）
+4. ProIcons 图标使用描边风格，适合现代化界面
 
 ## 最佳实践
 
@@ -182,13 +203,13 @@ Tailwind CSS 官方图标
 在同一个项目中，尽量使用同一个图标集：
 
 ```vue
-<!-- ✅ 推荐：统一使用 mdi -->
-<icon-mdi-home />
-<icon-mdi-settings />
-<icon-mdi-user />
+<!-- ✅ 推荐：统一使用 proicons -->
+<icon-proicons-home />
+<icon-proicons-settings />
+<icon-proicons-person />
 
 <!-- ❌ 不推荐：混用多个图标集 -->
-<icon-mdi-home />
+<icon-proicons-home />
 <icon-carbon-settings />
 <icon-heroicons-user />
 ```
@@ -199,9 +220,9 @@ Tailwind CSS 官方图标
 
 ```vue
 <script setup>
-import IconSuccess from '~icons/mdi/check-circle'
-import IconError from '~icons/mdi/close-circle'
-import IconWarning from '~icons/mdi/alert-circle'
+import IconSuccess from '~icons/proicons/checkmark-circle'
+import IconError from '~icons/proicons/cancel-circle'
+import IconWarning from '~icons/proicons/alert-circle'
 </script>
 ```
 
@@ -211,8 +232,8 @@ import IconWarning from '~icons/mdi/alert-circle'
 
 ```vue
 <!-- 只会打包 home 和 settings 图标 -->
-<icon-mdi-home />
-<icon-mdi-settings />
+<icon-proicons-home />
+<icon-proicons-settings />
 ```
 
 ### 4. 可访问性
@@ -221,7 +242,7 @@ import IconWarning from '~icons/mdi/alert-circle'
 
 ```vue
 <button aria-label="关闭">
-  <icon-mdi-close />
+  <icon-proicons-cancel />
 </button>
 ```
 
@@ -231,7 +252,7 @@ import IconWarning from '~icons/mdi/alert-circle'
 
 ```vue
 <template>
-  <icon-mdi-loading class="spinning" />
+  <icon-proicons-spinner class="spinning" />
 </template>
 
 <style scoped>
@@ -250,7 +271,7 @@ import IconWarning from '~icons/mdi/alert-circle'
 
 ```vue
 <template>
-  <icon-mdi-heart class="heart-icon" />
+  <icon-proicons-heart class="heart-icon" />
 </template>
 
 <style scoped>
@@ -269,18 +290,19 @@ import IconWarning from '~icons/mdi/alert-circle'
 
 ### 图标不显示
 
-1. 检查图标名称是否正确
+1. 检查图标名称是否正确（ProIcons 使用 kebab-case）
 2. 确认 Vite 配置正确
 3. 重启开发服务器
+4. 访问 https://icones.netlify.app/collection/proicons 确认图标名称
 
 ### 图标太大/太小
 
 ```vue
 <!-- 方法 1：使用 style -->
-<icon-mdi-home style="font-size: 24px;" />
+<icon-proicons-home style="font-size: 24px;" />
 
 <!-- 方法 2：使用 class -->
-<icon-mdi-home class="icon-lg" />
+<icon-proicons-home class="icon-lg" />
 
 <style>
 .icon-lg {
@@ -294,10 +316,10 @@ import IconWarning from '~icons/mdi/alert-circle'
 
 ```vue
 <!-- SVG 图标使用 currentColor -->
-<icon-mdi-home style="color: blue;" />
+<icon-proicons-home style="color: blue;" />
 
 <!-- 或使用 CSS 变量 -->
-<icon-mdi-home style="color: var(--primary-color);" />
+<icon-proicons-home style="color: var(--primary-color);" />
 ```
 
 ## 自定义图标
@@ -460,10 +482,12 @@ const currentIcon = ref(IconCustomLogo)
 
 ## 参考资源
 
+- [ProIcons 官方网站](https://procode-software.github.io/proicons/)
+- [ProIcons GitHub](https://github.com/ProCode-Software/proicons)
+- [ProIcons 图标浏览器](https://icones.netlify.app/collection/proicons)
 - [unplugin-icons 文档](https://github.com/unplugin/unplugin-icons)
 - [Iconify 图标搜索](https://icon-sets.iconify.design/)
 - [Icônes 搜索工具](https://icones.js.org/)
-- [Material Design Icons](https://pictogrammers.com/library/mdi/)
 - [SVGOMG - SVG 优化工具](https://jakearchibald.github.io/svgomg/)
 - [SVG 在线编辑器](https://svg-edit.github.io/svgedit/)
 

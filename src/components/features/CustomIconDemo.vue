@@ -1,6 +1,6 @@
 <template>
   <div class="custom-icon-demo">
-    <h3><icon-mdi-star-circle /> 自定义图标演示</h3>
+    <h3><icon-proicons-apps /> 自定义图标演示</h3>
 
     <div class="demo-section">
       <h4>基本使用</h4>
@@ -101,7 +101,7 @@ const iconComponent = ref(IconCustomLogo)
     </div>
 
     <div class="info-box">
-      <icon-mdi-information-outline />
+      <icon-proicons-info />
       <div>
         <strong>提示：</strong>
         将你的 SVG 图标文件放入 <code>src/assets/icons/</code> 目录，
